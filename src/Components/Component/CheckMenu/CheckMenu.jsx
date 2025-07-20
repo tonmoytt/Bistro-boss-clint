@@ -121,7 +121,14 @@ const CheckMenu = () => {
                 </div>
             </div>
 
-            <div></div>
+            <div>
+               <div className="relative w-max mx-auto ">
+  <button className="text-black px-4 py-2  font-semibold">View full Menu</button>
+  <div className="absolute left-0 bottom-0 w-full rounded-b-xl h-[3px] bg-gradient-to-b from-gray-500 to-transparent"></div>
+</div>
+
+
+            </div>
         </div>
     );
 };

@@ -4,9 +4,11 @@ import Swippppppp from '../Swippppppp/Swippppppp';
 import BistroAbout from '../BistroAbout/BistroAbout';
 import CheckMenu from '../CheckMenu/CheckMenu';
 
+
 const Home = () => {
     return (
         <div>
+          
           <SWip></SWip>
           <Swippppppp></Swippppppp>
           <BistroAbout></BistroAbout>
