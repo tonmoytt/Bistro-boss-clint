@@ -20,6 +20,7 @@ import CartContextProvider from './Components/Component/Navbar/Dashboard/Cardcon
 
 // Import Toaster from react-hot-toast
 import { Toaster } from 'react-hot-toast';
+import PrivetRoute from './Components/Authincation/PrivetRoute/PrivetRoute';
 
 const router = createBrowserRouter([
   {
@@ -45,7 +46,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/dashboard',
-        element: <Dashboard></Dashboard>
+        element: <PrivetRoute><Dashboard></Dashboard></PrivetRoute> 
       },
       {
         path: '/menu',
@@ -53,7 +54,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/ourshop',
-        element: <OurShop></OurShop>
+        element: <PrivetRoute><OurShop></OurShop></PrivetRoute> 
       },
     ]
   },
