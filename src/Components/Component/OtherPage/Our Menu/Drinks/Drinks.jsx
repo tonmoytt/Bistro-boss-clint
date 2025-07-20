@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SectionTitle from '../../../Shered/SectionTitle/SectionTitle';
-import drinksBanner from '../../../../../assets/Home-img/images (2).jpg';
+import drinksBanner from '../../../../../assets/Home-img/drinksssssssssss.jpg';
 import { FaShoppingCart } from 'react-icons/fa';
 
 const Drinks = () => {
@@ -24,8 +24,8 @@ const Drinks = () => {
                     alt="Drinks Banner"
                     className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center px-4">
-                    <div className="bg-black/60 text-white max-w-xl sm:max-w-3xl md:max-w-4xl w-full mx-auto h-32 sm:h-36 md:h-40 flex flex-col justify-center text-center px-6 sm:px-12 rounded-md">
+                <div className="absolute inset-0  flex items-center justify-center px-4">
+                    <div className="bg-black/40 text-white max-w-xl sm:max-w-3xl md:max-w-4xl w-full mx-auto h-32 sm:h-36 md:h-40 flex flex-col justify-center text-center px-6 sm:px-12 rounded-md">
                         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold uppercase mb-2">Drinks</h1>
                         <p className="text-xs sm:text-sm md:text-base tracking-wider uppercase">
                             Lorem ipsum dolor sit amet consectetur, adipisicing elit. <br />

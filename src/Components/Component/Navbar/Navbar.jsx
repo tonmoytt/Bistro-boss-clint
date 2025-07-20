@@ -14,10 +14,10 @@ const Navbar = () => {
     const menuItems = (
         <>
             <Link to="/" className="hover:text-yellow-400">Home</Link>
-            <Link to="/" className="hover:text-yellow-400">Contact Us</Link>
+            <Link to="/contact" className="hover:text-yellow-400">Contact Us</Link>
             <Link to="/" className="hover:text-yellow-400">Dashboard</Link>
             <Link to="/menu" className="hover:text-yellow-400">Menu</Link>
-            <Link to="/" className="text-green-400 font-bold flex items-center gap-2">
+            <Link to="/shop" className="text-green-400 font-bold flex items-center gap-2">
                 <span>Our Shop</span>
                 <span className="bg-green-400 rounded-full p-[4px]">
                     <FaShoppingCart className="text-white text-sm" />

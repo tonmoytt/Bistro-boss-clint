@@ -14,6 +14,7 @@ import Authincation from './Components/Authincation/Authincation';
 import OurMenu from './Components/Component/OtherPage/Our Menu/OurMenu';
 import { HelmetProvider } from 'react-helmet-async'
 import OurShop from './Components/Component/OurShop pages/OurShop';
+import ContactUs from './Components/Component/Navbar/ContactUs/ContactUs';
 
 const router = createBrowserRouter([
   {
@@ -34,11 +35,15 @@ const router = createBrowserRouter([
         element: <Signup></Signup>
       },
       {
+        path: '/contact',
+        element: <ContactUs></ContactUs>
+      },
+      {
         path: '/menu',
         element: <OurMenu></OurMenu>
       },
       {
-        path: '/ourshop',
+        path: '/shop',
         element: <OurShop></OurShop>
       },
 

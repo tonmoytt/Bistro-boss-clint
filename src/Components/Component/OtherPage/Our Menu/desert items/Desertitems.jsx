@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import DesertPic from '../../../../../assets/Home-img/menu glass 2.jpg';
+import DesertPic from '../../../../../assets/sadid/menu/dessert-bg.jpeg';
 import SectionTitle from '../../../Shered/SectionTitle/SectionTitle';
 import { FaShoppingCart } from 'react-icons/fa';
 import { motion } from 'framer-motion';
@@ -81,7 +81,7 @@ const Desertitems = () => {
                         alt="Banner"
                         className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center px-4">
+                    <div className="absolute inset-0  flex items-center justify-center px-4">
                         <div className="bg-black/60 text-white max-w-xl sm:max-w-3xl md:max-w-4xl w-full mx-auto h-32 sm:h-36 md:h-40 flex flex-col justify-center text-center px-6 sm:px-12 rounded-md">
                             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold uppercase mb-2">Dessert</h1>
                             <p className="text-xs sm:text-sm md:text-base tracking-wider uppercase">

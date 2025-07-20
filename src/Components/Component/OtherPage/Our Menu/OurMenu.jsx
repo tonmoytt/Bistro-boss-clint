@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import glassmenu from '../../../../assets/Home-img/Menu glass 3.jpg';
+import glassmenu from '../../../../assets/sadid/menu/banner3.jpg';
 import SectionTitle from '../../Shered/SectionTitle/SectionTitle';
 import { Helmet } from 'react-helmet-async';
 import Desertitems from './desert items/Desertitems';
@@ -29,7 +29,7 @@ const OurMenu = () => {
             </Helmet>
 
             {/* banner section */}
-            <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[550px] xl:h-[600px]">
+            <div className="relative w-full h-[300px] sm:h-[400px] md:h-[400px] lg:h-[400px] xl:h-[400px]">
                 {/* Background Image */}
                 <img
                     src={glassmenu}
