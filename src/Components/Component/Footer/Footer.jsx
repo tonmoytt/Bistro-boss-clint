@@ -2,10 +2,14 @@ import React from 'react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaCheckCircle } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import food from '../../../assets/menu picture/p4.jpg'
+import payple from '../../../assets/menu picture/paypel.png'
+import visa from '../../../assets/menu picture/visa.png'
+import master from '../../../assets/menu picture/master.png'
+import discover from '../../../assets/menu picture/discover.jpg'
 
 const Footer = () => {
   return (
-    <footer className="bg-[#fdfaf5] text-gray-800 pt-24 relative mt-28">
+    <footer className="bg-[#fdfaf5] text-gray-800 pt-24 relative mt-40 md:mt-28">
       {/* Newsletter Card */}
       <div className="max-w-6xl mx-auto absolute -top-36 md:-top-20 left-0 right-0 z-20 px-6">
         <div className="bg-white rounded-xl border-4 border-orange-400 shadow-xl p-6 md:p-10 grid md:grid-cols-2 gap-6">
@@ -89,10 +93,10 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-t border-gray-700 pt-6 text-sm text-gray-400">
             <p>©2025 All rights reserved by <span className="text-white font-bold">Food Zone</span></p>
             <div className="flex gap-3">
-              <img src="/icons/paypal.png" alt="paypal" className="w-10" />
-              <img src="/icons/visa.png" alt="visa" className="w-10" />
-              <img src="/icons/mastercard.png" alt="mastercard" className="w-10" />
-              <img src="/icons/discover.png" alt="discover" className="w-10" />
+              <img src={payple} alt="paypal" className="w-10 h-6" />
+              <img src={visa} alt="visa" className="w-10 h-6" />
+              <img src={master} alt="mastercard" className="w-10 h-6" />
+              <img src={discover} alt="discover" className="w-10 h-6" />
             </div>
           </div>
         </div>

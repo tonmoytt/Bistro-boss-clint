@@ -3,9 +3,11 @@ import saladpic from '../../../../../assets/sadid/menu/salad-bg.jpg';
 import SectionTitle from '../../../Shered/SectionTitle/SectionTitle';
 import { FaShoppingCart } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const Salad = () => {
   const [salad, setSalad] = useState([]);
+     const Navigate = useNavigate()
 
   useEffect(() => {
     fetch('/data.json')
@@ -15,6 +17,10 @@ const Salad = () => {
         setSalad(saladItems);
       });
   }, []);
+
+ const handleOrderClick = (id) => {
+        Navigate('/ourshop', { state: { selectedId: id } });
+    };
 
   return (
     <>
@@ -123,9 +129,11 @@ const Salad = () => {
                     className="animated-border"
                     onClick={() => alert(`Ordered: ${item.name}`)}
                   >
-                    <div className="button-inner">
+
+                    <button className='button-inner flex items-center gap-1' onClick={() => handleOrderClick(item.id)}>
                       <FaShoppingCart /> Order Now
-                    </div>
+                    </button>
+
                   </motion.div>
                 </div>
               </div>

@@ -23,7 +23,7 @@ const ContactUs = () => {
             </header>
 
             {/* Contact Section */}
-            <section className="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-12">
+            <section className="max-w-6xl mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-2 gap-12">
                 {/* Left Info */}
                 <motion.div
                     initial={{ opacity: 0, x: -50 }}
@@ -43,7 +43,7 @@ const ContactUs = () => {
                     </div>
                     <div className="mt-6">
                         <p className="uppercase text-gray-500 text-sm mb-2">Follow Us</p>
-                        <div className="flex gap-4 text-lg text-yellow-400">
+                        <div className="flex flex-wrap gap-4 text-lg text-yellow-400">
                             <a href="#">Facebook</a>
                             <a href="#">Instagram</a>
                             <a href="#">Twitter</a>
@@ -98,7 +98,7 @@ const ContactUs = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.7 }}
                 viewport={{ once: true }}
-                className="h-[50vh] bg-cover bg-center flex flex-col items-center justify-center text-center px-4"
+                className="min-h-[40vh] bg-cover bg-center flex flex-col items-center justify-center text-center px-4"
                 style={{
                     backgroundImage: "url('https://images.unsplash.com/photo-1552566626-52f8b828add9')"
                 }}

@@ -9,9 +9,11 @@ import Salad from './Salad/Salad';
 import Soup from './Soup/Soup';
 import { FaShoppingCart, FaTag } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const OurMenu = () => {
     const [menu, setMenu] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch('/data.json')
@@ -22,37 +24,28 @@ const OurMenu = () => {
             });
     }, []);
 
+    const handleOrderClick = (id, category) => {
+        navigate('/ourshop', { state: { selectedId: id, selectedCategory: category } });
+    };
+
     return (
         <div className="w-full">
             <Helmet>
                 <title>Bistro Boss | Menu</title>
             </Helmet>
 
-            {/* banner section */}
-            <div className="relative w-full h-[300px] sm:h-[400px] md:h-[400px] lg:h-[400px] xl:h-[400px]">
-                {/* Background Image */}
-                <img
-                    src={glassmenu}
-                    alt="Banner"
-                    className="w-full h-full object-cover"
-                />
-
-                {/* Overlay */}
+            {/* Banner Section */}
+            <div className="relative w-full h-[300px] sm:h-[400px]">
+                <img src={glassmenu} alt="Banner" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center px-4">
-                    <div className="bg-black/60 text-white max-w-xl sm:max-w-3xl md:max-w-4xl w-full mx-auto h-32 sm:h-36 md:h-40 flex flex-col justify-center text-center px-6 sm:px-12 rounded-md">
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold uppercase mb-2">Our Menu</h1>
-                        <p className="text-xs sm:text-sm md:text-base tracking-wider uppercase">
-                            Would you like to try a dish?
-                        </p>
+                    <div className="bg-black/60 text-white max-w-4xl w-full mx-auto h-40 flex flex-col justify-center text-center px-6 sm:px-12 rounded-md">
+                        <h1 className="text-4xl font-bold uppercase mb-2">Our Menu</h1>
+                        <p className="text-sm tracking-wider uppercase">Would you like to try a dish?</p>
                     </div>
                 </div>
             </div>
 
-
-            {/* banner section close*/}
-
-
-            {/* Today's Offer Section Title */}
+            {/* Section Title */}
             <div className="mt-10">
                 <SectionTitle Subheading={"Today's Offer"} Heading={"Don't Miss Out!"} />
             </div>
@@ -65,7 +58,6 @@ const OurMenu = () => {
                         whileHover={{ scale: 1.05, boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}
                         className="bg-white rounded-xl overflow-hidden shadow-md relative cursor-pointer flex gap-4 p-4 items-center"
                     >
-                        {/* Discount Label */}
                         {item.discount && (
                             <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded flex items-center gap-1 z-10">
                                 <FaTag />
@@ -88,7 +80,7 @@ const OurMenu = () => {
 
                             <button
                                 className="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-full font-semibold transition"
-                                onClick={() => alert(`Ordered: ${item.name}`)}
+                                onClick={() => handleOrderClick(item.id, item.category)}
                             >
                                 <FaShoppingCart />
                                 Order Now
@@ -110,7 +102,7 @@ const OurMenu = () => {
                 <div className="absolute left-0 bottom-0 w-full h-[3px] rounded-b-xl bg-gradient-to-b from-gray-500 to-transparent"></div>
             </div>
 
-            {/* Other Categories */}
+            {/* Other Sections */}
             <Desertitems />
             <Pizza />
             <Drinks />

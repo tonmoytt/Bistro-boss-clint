@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import SectionTitle from '../../../Shered/SectionTitle/SectionTitle';
 import drinksBanner from '../../../../../assets/Home-img/drinksssssssssss.jpg';
 import { FaShoppingCart } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const Drinks = () => {
     const [drinksItems, setDrinksItems] = useState([]);
+       const Navigate = useNavigate()
 
     useEffect(() => {
         fetch('/data.json')
@@ -15,6 +17,9 @@ const Drinks = () => {
             });
     }, []);
 
+     const handleOrderClick = (id) => {
+        Navigate('/ourshop', { state: { selectedId: id } });
+    };
     return (
         <div className="w-full">
             {/* Banner Section */}
@@ -58,8 +63,9 @@ const Drinks = () => {
 
                             {/* Order Now Button */}
                             <div className="text-end mt-2">
-                                <button className="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded-full text-sm font-medium transition-all">
+                                <button onClick={() => handleOrderClick(item.id)} className="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded-full text-sm font-medium transition-all">
                                     <FaShoppingCart /> Order Now
+
                                 </button>
                             </div>
 

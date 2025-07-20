@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { FaShoppingCart } from 'react-icons/fa';
 import SectionTitle from '../../../Shered/SectionTitle/SectionTitle';
 import pizzaBanner from '../../../../../assets/sadid/menu/pizza-bg.jpg';
+import { useNavigate } from 'react-router-dom';
 
 const Pizza = () => {
     const [pizzaItems, setPizzaItems] = useState([]);
+    const Navigate = useNavigate()
 
     useEffect(() => {
         fetch('/data.json')
@@ -14,6 +16,9 @@ const Pizza = () => {
                 setPizzaItems(filtered);
             });
     }, []);
+    const handleOrderClick = (id) => {
+        Navigate('/ourshop', { state: { selectedId: id } });
+    };
 
     return (
         <div className="w-full">
@@ -59,9 +64,12 @@ const Pizza = () => {
 
                             {/* Order Now Button - Right Aligned */}
                             <div className="text-end mt-2">
-                                <button className="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded-full text-sm font-medium transition-all">
+
+
+                                <button className=' inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1 rounded-full text-sm font-medium transition-all  ' onClick={() => handleOrderClick(item.id)}>
                                     <FaShoppingCart /> Order Now
                                 </button>
+
                             </div>
                         </div>
                     </div>

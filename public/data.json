@@ -56,6 +56,14 @@
     "image": "https://i.ibb.co/r2HPvHYt/p7.jpg"
   },
   {
+    "id": 77,
+    "name": "Chicken Sausage Pizza",
+    "description": "Delicious chicken sausage pizza made with fresh ingredients.",
+    "price": 450,
+    "category": "chefrecommend",
+    "image": "https://i.ibb.co/r2HPvHYt/p7.jpg"
+  },
+  {
     "id": 8,
     "name": "Paneer Tikka Pizza",
     "description": "Delicious paneer tikka pizza made with fresh ingredients.",
@@ -176,6 +184,14 @@
     "image": "https://i.ibb.co/20zdd0PD/s6.jpg"
   },
   {
+    "id": 22,
+    "name": "Quinoa Salad",
+    "description": "Delicious quinoa salad made with fresh ingredients.",
+    "price": 493,
+    "category": "chefrecommend",
+    "image": "https://i.ibb.co/20zdd0PD/s6.jpg"
+  },
+  {
     "id": 23,
     "name": "Cobb Salad",
     "description": "Delicious cobb salad made with fresh ingredients.",
@@ -197,6 +213,14 @@
     "description": "Delicious chocolate cake made with fresh ingredients.",
     "price": 367,
     "category": "Dessert",
+    "image": "https://i.ibb.co/mVV0X5qx/d1.jpg"
+  },
+  {
+    "id": 25,
+    "name": "Chocolate Cake",
+    "description": "Delicious chocolate cake made with fresh ingredients.",
+    "price": 367,
+    "category": "chefrecommend",
     "image": "https://i.ibb.co/mVV0X5qx/d1.jpg"
   },
   {

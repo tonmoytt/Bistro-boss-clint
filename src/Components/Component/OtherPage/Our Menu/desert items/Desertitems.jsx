@@ -3,9 +3,11 @@ import DesertPic from '../../../../../assets/sadid/menu/dessert-bg.jpeg';
 import SectionTitle from '../../../Shered/SectionTitle/SectionTitle';
 import { FaShoppingCart } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const Desertitems = () => {
     const [desert, setDesert] = useState([]);
+    const Navigate = useNavigate()
 
     useEffect(() => {
         fetch('/data.json')
@@ -15,6 +17,10 @@ const Desertitems = () => {
                 setDesert(desertOffer);
             });
     }, []);
+
+    const handleOrderClick = (id) => {
+        Navigate('/ourshop', { state: { selectedId: id } });
+    };
 
     return (
         <>
@@ -122,10 +128,13 @@ const Desertitems = () => {
                                         whileHover={{ scale: 1.1 }}
                                         whileTap={{ scale: 0.95 }}
                                         className="animated-border"
-                                        onClick={() => alert(`Ordered: ${item.name}`)}
+                                         
                                     >
                                         <div className="button-inner">
-                                            <FaShoppingCart /> Order Now
+                                            <button className='flex items-center gap-1' onClick={() => handleOrderClick(item.id)}>
+                                                <FaShoppingCart /> Order Now
+                                            </button>
+
                                         </div>
                                     </motion.div>
                                 </div>

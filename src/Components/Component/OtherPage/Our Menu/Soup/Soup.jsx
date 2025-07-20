@@ -3,9 +3,11 @@ import SectionTitle from '../../../Shered/SectionTitle/SectionTitle';
 import souppic from '../../../../../assets/sadid/menu/soup-bg.jpg';
 import { FaShoppingCart } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const Soup = () => {
   const [soup, setSoup] = useState([]);
+     const Navigate = useNavigate()
 
   useEffect(() => {
     fetch('/data.json')
@@ -15,6 +17,10 @@ const Soup = () => {
         setSoup(soupItems);
       });
   }, []);
+
+ const handleOrderClick = (id) => {
+        Navigate('/ourshop', { state: { selectedId: id } });
+    };
 
   return (
     <>
@@ -121,11 +127,11 @@ const Soup = () => {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     className="animated-border"
-                    onClick={() => alert(`Ordered: ${item.name}`)}
+                    // onClick={() => alert(`Ordered: ${item.name}`)}
                   >
-                    <div className="button-inner">
-                      <FaShoppingCart /> Order Now
-                    </div>
+                    <button className='button-inner flex items-center gap-1' onClick={() => handleOrderClick(item.id)}>
+                                                <FaShoppingCart /> Order Now
+                                            </button>
                   </motion.div>
                 </div>
               </div>

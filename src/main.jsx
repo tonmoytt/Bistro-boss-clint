@@ -15,6 +15,11 @@ import OurMenu from './Components/Component/OtherPage/Our Menu/OurMenu';
 import { HelmetProvider } from 'react-helmet-async'
 import OurShop from './Components/Component/OurShop pages/OurShop';
 import ContactUs from './Components/Component/Navbar/ContactUs/ContactUs';
+import Dashboard from './Components/Component/Navbar/Dashboard/Dashboard';
+import CartContextProvider from './Components/Component/Navbar/Dashboard/Cardcontext/Cardcontext';
+
+// Import Toaster from react-hot-toast
+import { Toaster } from 'react-hot-toast';
 
 const router = createBrowserRouter([
   {
@@ -39,16 +44,18 @@ const router = createBrowserRouter([
         element: <ContactUs></ContactUs>
       },
       {
+        path: '/dashboard',
+        element: <Dashboard></Dashboard>
+      },
+      {
         path: '/menu',
         element: <OurMenu></OurMenu>
       },
       {
-        path: '/shop',
+        path: '/ourshop',
         element: <OurShop></OurShop>
       },
-
     ]
-
   },
 ]);
 
@@ -56,12 +63,33 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <div className='max-w-screen-xl mx-auto'>
       <Authincation>
-        <HelmetProvider>
-          <RouterProvider router={router} />
-        </HelmetProvider>
-
+        <CartContextProvider>
+          <HelmetProvider>
+            <>
+              <RouterProvider router={router} />
+              {/* Toaster should be placed here once */}
+              <Toaster 
+                position="top-right" 
+                toastOptions={{
+                  style: {
+                    borderRadius: '8px',
+                    background: '#333',
+                    color: '#fff',
+                  },
+                  duration: 4000,
+                  success: {
+                    duration: 3000,
+                    theme: {
+                      primary: 'green',
+                      secondary: 'white',
+                    },
+                  },
+                }}
+              />
+            </>
+          </HelmetProvider>
+        </CartContextProvider>
       </Authincation>
     </div>
-
   </StrictMode>,
-)
+);

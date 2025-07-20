@@ -3,6 +3,7 @@ import SWip from '../SWip/SWip';
 import Swippppppp from '../Swippppppp/Swippppppp';
 import BistroAbout from '../BistroAbout/BistroAbout';
 import CheckMenu from '../CheckMenu/CheckMenu';
+import ChefRecommend from '../ChefRecommend/ChefRecommend';
 
 
 const Home = () => {
@@ -13,6 +14,7 @@ const Home = () => {
           <Swippppppp></Swippppppp>
           <BistroAbout></BistroAbout>
           <CheckMenu></CheckMenu>
+          <ChefRecommend></ChefRecommend>
         </div>
     );
 };
