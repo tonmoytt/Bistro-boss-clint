@@ -2,6 +2,8 @@ import React, { useContext, useRef, useState } from 'react';
 import { FaEye, FaEyeSlash, FaLock, FaUser } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../Authincation/Authincation';
+import Swal from 'sweetalert2';
+
 
 const Login = () => {
   const [error, setError] = useState('');
@@ -23,20 +25,44 @@ const Login = () => {
       return;
     }
 
-    Login(email, password)
-      .then((res) => {
-        const user = res.user;
-        console.log('Logged in user:', user.email);
-        alert('Successfully logged in');
-        form.reset();
-        setError('');
-        navigate('/');
-      })
-      .catch((error) => {
-        console.error(error.message);
-        setError('Login failed. Please check your email and password.');
-      });
-  };
+   Login(email, password)
+  .then((res) => {
+    const user = res.user;
+    console.log('Logged in user:', user.email);
+
+    // ✅ SweetAlert Success Message
+    Swal.fire({
+      title: 'Login Successful!',
+      text: `Welcome back, ${user.email}`,
+      icon: 'success',
+      confirmButtonText: 'Continue',
+      confirmButtonColor: '#facc15', // yellow-400
+      background: '#1f2937', // gray-800 bg
+      color: '#fef3c7', // text-yellow-100
+    });
+
+    form.reset();
+    setError('');
+    navigate('/');
+  })
+  .catch((error) => {
+    console.error(error.message);
+
+    // ❌ SweetAlert Error Message
+    Swal.fire({
+      title: 'Login Failed!',
+      text: 'Please check your email and password.',
+      icon: 'error',
+      confirmButtonText: 'Try Again',
+      confirmButtonColor: '#ef4444', // red-500
+      background: '#1f2937', // dark mode bg
+      color: '#fecaca', // red text
+    });
+
+    setError('Login failed. Please check your email and password.');
+  });
+}
+
 
   return (
     <div>

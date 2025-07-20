@@ -3,16 +3,35 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../Authincation/Authincation';
 import { FaShoppingCart, FaUserAlt } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import Swal from 'sweetalert2';
 
 const Navbar = () => {
     const { currentUser, SignoutUser } = useContext(AuthContext);
     const [menuOpen, setMenuOpen] = useState(false);
 
     const handleSignOut = () => {
-        SignoutUser().then(() => alert('Sign-out successfully'));
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You will be signed out!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Sign out',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                SignoutUser().then(() => {
+                    Swal.fire({
+                        title: 'Signed Out!',
+                        text: 'You have been successfully signed out.',
+                        icon: 'success',
+                        confirmButtonColor: '#3085d6',
+                    });
+                });
+            }
+        });
     };
 
-    // 👉 Mobile menu link click handle
     const handleLinkClick = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setMenuOpen(false);
@@ -37,18 +56,15 @@ const Navbar = () => {
         <header className="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-black/60 via-black/40 to-black/60 backdrop-blur-lg shadow-lg text-white">
             <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
-                    {/* Logo */}
                     <div>
                         <p className="text-xl font-bold uppercase">Bistro Boss</p>
                         <p className="tracking-[5px] text-sm uppercase text-gray-300">Restaurant</p>
                     </div>
 
-                    {/* Desktop Menu */}
                     <nav className="hidden lg:flex space-x-6 text-sm font-semibold uppercase items-center">
                         {menuItems}
                     </nav>
 
-                    {/* Auth Buttons */}
                     <div className="hidden lg:flex items-center space-x-4">
                         {currentUser ? (
                             <>
@@ -64,14 +80,17 @@ const Navbar = () => {
                             </>
                         ) : (
                             <Link to="/login">
-                                <button className="bg-white text-black px-3 py-1 rounded-full font-semibold hover:bg-yellow-300 transition">
-                                    Login
-                                </button>
+                                <Link to="/login">
+                                    <button className="relative px-6 py-[6px] font-semibold uppercase text-sm rounded-full border border-yellow-400 text-yellow-300 overflow-hidden group hover:text-black transition duration-300 ease-in-out">
+                                        <span className="absolute inset-0 bg-yellow-400 scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-in-out z-0"></span>
+                                        <span className="relative z-10 tracking-wide">Login</span>
+                                    </button>
+                                </Link>
+
                             </Link>
                         )}
                     </div>
 
-                    {/* Mobile Hamburger */}
                     <div className="lg:hidden">
                         <button
                             onClick={() => setMenuOpen(!menuOpen)}
@@ -90,7 +109,6 @@ const Navbar = () => {
                 </div>
             </div>
 
-            {/* Mobile Menu Slide */}
             <AnimatePresence>
                 {menuOpen && (
                     <motion.div
@@ -138,7 +156,6 @@ const Navbar = () => {
                 )}
             </AnimatePresence>
         </header>
-        
     );
 };
 

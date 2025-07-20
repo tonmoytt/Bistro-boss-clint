@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../Authincation/Authincation';
+import Swal from 'sweetalert2';
 
 const Signup = () => {
     const { Signup } = useContext(AuthContext)
@@ -33,17 +34,42 @@ const Signup = () => {
         setError(''); // Clear errors before registering
 
         
-        Signup(email, password)
-            .then(result => {
-                console.log('User registered:', result.user);
-                alert('Successfully created account');
-                e.target.reset();
-                navigate('/login');
-            })
-            .catch(error => {
-                console.log(error.message);
-                setError(error.message);
-            });
+      Signup(email, password)
+  .then(result => {
+    console.log('User registered:', result.user);
+
+    // ✅ SweetAlert Success with Timer
+    Swal.fire({
+      title: 'Account Created!',
+      text: 'Redirecting to login...',
+      icon: 'success',
+      timer: 5000, // 3 seconds
+      showConfirmButton: false,
+      background: '#f0fdf4', // light green
+      color: '#064e3b', // dark green
+      didClose: () => {
+        navigate('/login');
+      }
+    });
+
+    e.target.reset();
+  })
+  .catch(error => {
+    console.log(error.message);
+    setError(error.message);
+
+    // ❌ SweetAlert Error
+    Swal.fire({
+      title: 'Signup Failed!',
+      text: error.message,
+      icon: 'error',
+      confirmButtonText: 'Try Again',
+      confirmButtonColor: '#ef4444',
+      background: '#fef2f2',
+      color: '#991b1b'
+    });
+  });
+
  
 
 
