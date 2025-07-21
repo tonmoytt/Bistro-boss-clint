@@ -1,17 +1,19 @@
 import React, { useContext, useRef, useState } from 'react';
 import { FaEye, FaEyeSlash, FaLock, FaUser } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../Authincation/Authincation';
 import Swal from 'sweetalert2';
-
+import { Helmet } from 'react-helmet-async';
 
 const Login = () => {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const emailRef = useRef();
 
-  const { Login } = useContext(AuthContext); // ✅ Make sure Login exists in AuthContext
+  const { Login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -25,51 +27,50 @@ const Login = () => {
       return;
     }
 
-   Login(email, password)
-  .then((res) => {
-    const user = res.user;
-    console.log('Logged in user:', user.email);
+    Login(email, password)
+      .then(async (res) => {
+        const user = res.user;
+        await user.reload(); // fresh user data reload
 
-    // ✅ SweetAlert Success Message
-    Swal.fire({
-      title: 'Login Successful!',
-      text: `Welcome back, ${user.email}`,
-      icon: 'success',
-      confirmButtonText: 'Continue',
-      confirmButtonColor: '#facc15', // yellow-400
-      background: '#1f2937', // gray-800 bg
-      color: '#fef3c7', // text-yellow-100
-    });
+        Swal.fire({
+          title: 'Login Successful!',
+          text: `Welcome back, ${user.email}`,
+          icon: 'success',
+          confirmButtonText: 'Continue',
+          confirmButtonColor: '#facc15',
+          background: '#1f2937',
+          color: '#fef3c7',
+        });
 
-    form.reset();
-    setError('');
-    navigate('/');
-  })
-  .catch((error) => {
-    console.error(error.message);
+        form.reset();
+        setError('');
+        navigate(from, { replace: true });
+      })
+      .catch((error) => {
+        Swal.fire({
+          title: 'Login Failed!',
+          text: 'Please check your email and password.',
+          icon: 'error',
+          confirmButtonText: 'Try Again',
+          confirmButtonColor: '#ef4444',
+          background: '#1f2937',
+          color: '#fecaca',
+        });
 
-    // ❌ SweetAlert Error Message
-    Swal.fire({
-      title: 'Login Failed!',
-      text: 'Please check your email and password.',
-      icon: 'error',
-      confirmButtonText: 'Try Again',
-      confirmButtonColor: '#ef4444', // red-500
-      background: '#1f2937', // dark mode bg
-      color: '#fecaca', // red text
-    });
-
-    setError('Login failed. Please check your email and password.');
-  });
-}
-
+        setError('Login failed. Please check your email and password.');
+      });
+  };
 
   return (
     <div>
+      <Helmet>
+        <title>Bistro-Boss | Restaurant | Login</title>
+      </Helmet>
       <form onSubmit={handleLogin}>
         <div
           style={{
-            background: 'radial-gradient(circle at center, #122E44 0%, #0c1e3c 50%, #06121e 100%)',
+            background:
+              'radial-gradient(circle at center, #122E44 0%, #0c1e3c 50%, #06121e 100%)',
           }}
           className="min-h-screen flex items-center justify-center px-4"
         >
@@ -124,7 +125,7 @@ const Login = () => {
             {/* Login Button */}
             <button
               type="submit"
-              className="w-full py-2 rounded font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-400 hover:brightness-110 transition"
+              className="cursor-pointer w-full py-2 rounded font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-400 hover:brightness-110 transition"
             >
               LOGIN
             </button>

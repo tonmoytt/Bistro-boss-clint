@@ -2,12 +2,16 @@ import React, { useContext } from 'react';
 import { CartContext } from '../../Navbar/Dashboard/Cardcontext/Cardcontext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaPlus, FaMinus, FaTrash } from 'react-icons/fa';
+import { Helmet } from 'react-helmet-async';
 
 const Dashboard = () => {
   const { cartItems, addToCart, decreaseFromCart, removeFromCart } = useContext(CartContext);
 
   return (
     <div className="mt-16 p-4 sm:p-6 max-w-6xl mx-auto min-h-[80vh] bg-gradient-to-br from-[#f9fafb] via-[#e2e8f0] to-[#f8fafc] rounded-2xl shadow-2xl border border-gray-200">
+       <Helmet>
+                    <title>Bistro-Boss | Resturent | DashBoard</title>
+                  </Helmet>
       <h2 className="text-3xl sm:text-4xl font-extrabold mb-6 text-center text-gray-800 border-b border-gray-300 pb-4">
         🛒 Your Shopping Cart
       </h2>
