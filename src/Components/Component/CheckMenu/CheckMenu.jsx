@@ -6,6 +6,7 @@ import img2 from './../../../assets/menu picture/s2.jpg';
 import img3 from './../../../assets/menu picture/grill.jpg';
 import img4 from './../../../assets/menu picture/p5.jpg';
 import img5 from './../../../assets/menu picture/choumin.jpg';
+import { Link } from 'react-router-dom';
 
 const menuItems = [
   {
@@ -86,10 +87,11 @@ const CheckMenu = () => {
       </div>
 
       <div className="mt-12 text-center">
-        <button className="relative inline-block text-black font-semibold px-6 py-3 rounded-md hover:text-yellow-500 transition-colors duration-300">
+        <Link to='/menu'> <button className="relative inline-block text-black font-semibold px-6 py-3 rounded-md hover:text-yellow-500 transition-colors duration-300">
           View Full Menu
           <span className="absolute left-0 bottom-0 w-full h-[3px] rounded-b-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600"></span>
         </button>
+        </Link>
       </div>
     </div>
   );

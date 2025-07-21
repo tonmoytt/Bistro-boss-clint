@@ -68,7 +68,7 @@ const Signup = () => {
         title: 'Account Created!',
         text: 'Redirecting to login...',
         icon: 'success',
-        timer: 5000,
+        timer: 3000,
         showConfirmButton: false,
         background: '#f0fdf4',
         color: '#064e3b',
