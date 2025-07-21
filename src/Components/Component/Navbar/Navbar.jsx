@@ -24,21 +24,35 @@ const Navbar = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Gravatar URL generator from email
-    const getGravatarUrl = (email) => {
-        if (!email) return null;
-        const hash = md5(email.trim().toLowerCase());
-        return `https://www.gravatar.com/avatar/${hash}?d=identicon&s=64`;
-    };
+   // Gravatar URL generator from email
+const getGravatarUrl = (email) => {
+    const fallbackImage = 'https://i.ibb.co/r2HPvHYt/p7.jpg';
+    if (!email) return fallbackImage;
+    const hash = md5(email.trim().toLowerCase());
+    return `https://www.gravatar.com/avatar/${hash}?d=${encodeURIComponent(fallbackImage)}&s=64`;
+};
 
-    // Profile image resolver
-    const getProfileImage = () => {
-        if (currentUser) {
-            if (currentUser.photoURL) return currentUser.photoURL;
-            if (currentUser.email) return getGravatarUrl(currentUser.email);
+// Profile image resolver (handles all cases)
+const getProfileImage = () => {
+    const fallbackImage = 'https://i.ibb.co/r2HPvHYt/p7.jpg';
+
+    if (currentUser) {
+        // 1. Check for valid photoURL
+        const photoURL = currentUser.photoURL;
+        if (photoURL && typeof photoURL === 'string' && photoURL.trim() !== '') {
+            return photoURL;
         }
-        return 'https://i.ibb.co/r2HPvHYt/p7.jpg';
-    };
+
+        // 2. Else try gravatar if email exists
+        if (currentUser.email) {
+            return getGravatarUrl(currentUser.email);
+        }
+    }
+
+    // 3. Fallback to default image
+    return fallbackImage;
+};
+
 
     const handleSignOut = () => {
         Swal.fire({
