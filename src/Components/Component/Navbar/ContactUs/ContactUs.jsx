@@ -1,8 +1,55 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import contactimg from '../../../../assets/sadid/shop/banner2.jpg';
 
 const ContactUs = () => {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkDevice = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkDevice();
+        window.addEventListener('resize', checkDevice);
+        return () => window.removeEventListener('resize', checkDevice);
+    }, []);
+
+    // The form content extracted to reuse
+    const formContent = (
+        <>
+            <h2 className="text-2xl sm:text-3xl font-semibold mb-6">Your Details</h2>
+            <form className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        className="w-full px-4 py-3 bg-[#121212] text-sm border border-gray-700 rounded-md focus:outline-none focus:border-yellow-400"
+                    />
+                    <input
+                        type="email"
+                        placeholder="Email Address"
+                        className="w-full px-4 py-3 bg-[#121212] text-sm border border-gray-700 rounded-md focus:outline-none focus:border-yellow-400"
+                    />
+                </div>
+                <input
+                    type="text"
+                    placeholder="Subject"
+                    className="w-full px-4 py-3 bg-[#121212] text-sm border border-gray-700 rounded-md focus:outline-none focus:border-yellow-400"
+                />
+                <textarea
+                    placeholder="Comments / Questions"
+                    className="w-full h-32 px-4 py-3 bg-[#121212] text-sm border border-gray-700 rounded-md focus:outline-none focus:border-yellow-400 resize-none"
+                ></textarea>
+                <button
+                    type="submit"
+                    className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-3 rounded-md transition w-full sm:w-auto"
+                >
+                    Contact Us
+                </button>
+            </form>
+        </>
+    );
+
     return (
         <div className="bg-[#111] text-white w-full">
             {/* Header */}
@@ -52,44 +99,21 @@ const ContactUs = () => {
                 </motion.div>
 
                 {/* Right Form */}
-                <motion.div
-                    initial={{ opacity: 0, x: 50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                    viewport={{ once: true }}
-                    className="bg-[#1b1b1b] p-6 rounded-lg shadow-lg"
-                >
-                    <h2 className="text-2xl sm:text-3xl font-semibold mb-6">Your Details</h2>
-                    <form className="space-y-6">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <input
-                                type="text"
-                                placeholder="Name"
-                                className="w-full px-4 py-3 bg-[#121212] text-sm border border-gray-700 rounded-md focus:outline-none focus:border-yellow-400"
-                            />
-                            <input
-                                type="email"
-                                placeholder="Email Address"
-                                className="w-full px-4 py-3 bg-[#121212] text-sm border border-gray-700 rounded-md focus:outline-none focus:border-yellow-400"
-                            />
-                        </div>
-                        <input
-                            type="text"
-                            placeholder="Subject"
-                            className="w-full px-4 py-3 bg-[#121212] text-sm border border-gray-700 rounded-md focus:outline-none focus:border-yellow-400"
-                        />
-                        <textarea
-                            placeholder="Comments / Questions"
-                            className="w-full h-32 px-4 py-3 bg-[#121212] text-sm border border-gray-700 rounded-md focus:outline-none focus:border-yellow-400 resize-none"
-                        ></textarea>
-                        <button
-                            type="submit"
-                            className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-3 rounded-md transition w-full sm:w-auto"
-                        >
-                            Contact Us
-                        </button>
-                    </form>
-                </motion.div>
+                {isMobile ? (
+                    <div className="bg-[#1b1b1b] p-6 rounded-lg shadow-lg">
+                        {formContent}
+                    </div>
+                ) : (
+                    <motion.div
+                        initial={{ opacity: 0, x: 50 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                        viewport={{ once: true }}
+                        className="bg-[#1b1b1b] p-6 rounded-lg shadow-lg"
+                    >
+                        {formContent}
+                    </motion.div>
+                )}
             </section>
 
             {/* CTA Section */}
