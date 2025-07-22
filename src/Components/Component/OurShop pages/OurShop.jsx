@@ -5,25 +5,29 @@ import Swal from 'sweetalert2';  // SweetAlert import
 import img from '../../../assets/sadid/home/05.png';
 import { CartContext } from '../Navbar/Dashboard/Cardcontext/Cardcontext';
 import axios from 'axios';
+import { AuthContext } from '../../Authincation/Authincation';
 
 const categories = ['salad', 'pizza', 'soup', 'dessert', 'drinks', 'offerd'];
 
+
 const OurShop = () => {
+  const { currentUser } = useContext(AuthContext);
   const [newlyAddedItem, setNewlyAddedItem] = useState(null);
-useEffect(() => {
-  if (newlyAddedItem) {
-    axios.post('http://localhost:5000/cart', newlyAddedItem)
-      .then(response => {
-        console.log('Successfully added to MongoDB:', response.data);
+  useEffect(() => {
+    if (newlyAddedItem) {
+      axios.post('http://localhost:5000/cart', newlyAddedItem ,{
+         withCredentials: true // token cookie allow করবে
       })
-      .catch(error => {
-        console.error('Error adding to MongoDB:', error);
-      });
-  }
-}, [newlyAddedItem]);
+        .then(data => {
+          console.log('Successfully added to MongoDB:', data);
+        })
+        .catch(error => {
+          console.error('Error adding to MongoDB:', error);
+        });
+    }
+  }, [newlyAddedItem]);   //uppore backend data pathano hoyce
 
 
-//uppore backend data pathano hoyce
   const location = useLocation();
   const selectedIdFromMenu = location.state?.selectedId || null;
   const selectedIdNumber = Number(selectedIdFromMenu);
@@ -34,7 +38,7 @@ useEffect(() => {
   const itemRefs = useRef({});
 
   // Cart context থেকে addToCart এবং cartItems নেওয়া হচ্ছে
-  const { addToCart, cartItems } = useContext(CartContext);  
+  const { addToCart, cartItems } = useContext(CartContext);
   // Local cart context {backend data asle ata cmt korte hobe}
 
   useEffect(() => {
@@ -106,8 +110,13 @@ useEffect(() => {
         confirmButtonText: 'Yes, add it!',
       }).then((result) => {
         if (result.isConfirmed) {
+
+          const itemWithUser = {
+            ...item,
+            userEmail: currentUser?.email // 👈 user এর email যোগ করো
+          };
           addToCart(item);   // Local cart context {backend data asle ata cmt korte hobe}
-            setNewlyAddedItem(item); // Backend MongoDB te pathanor jonno
+          setNewlyAddedItem(itemWithUser); // Backend MongoDB te pathanor jonno
           Swal.fire({
             title: 'Success',
             text: `"${item.name}" has been added to your cart successfully.`,
@@ -149,11 +158,10 @@ useEffect(() => {
           <button
             key={cat}
             onClick={() => setSelectedCategory(cat)}
-            className={`uppercase text-sm font-medium px-4 py-2 rounded-full border ${
-              selectedCategory === cat
-                ? 'bg-yellow-500 text-black border-yellow-500'
-                : 'text-gray-600 border-gray-300 hover:bg-yellow-100'
-            } transition`}
+            className={`uppercase text-sm font-medium px-4 py-2 rounded-full border ${selectedCategory === cat
+              ? 'bg-yellow-500 text-black border-yellow-500'
+              : 'text-gray-600 border-gray-300 hover:bg-yellow-100'
+              } transition`}
           >
             {cat}
           </button>
@@ -166,9 +174,8 @@ useEffect(() => {
           <div
             key={item.id}
             ref={(el) => (itemRefs.current[item.id] = el)}
-            className={`border border-gray-200 shadow-lg rounded-md overflow-hidden bg-white transition-transform duration-300 ${
-              selectedIdNumber === item.id ? 'scale-105 opacity-70 border-yellow-500' : ''
-            }`}
+            className={`border border-gray-200 shadow-lg rounded-md overflow-hidden bg-white transition-transform duration-300 ${selectedIdNumber === item.id ? 'scale-105 opacity-70 border-yellow-500' : ''
+              }`}
           >
             <img src={item.image} alt={item.name} className="w-full h-48 object-cover" />
             <div className="p-4">
