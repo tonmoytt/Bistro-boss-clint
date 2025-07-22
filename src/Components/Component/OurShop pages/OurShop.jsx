@@ -4,10 +4,26 @@ import { useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';  // SweetAlert import
 import img from '../../../assets/sadid/home/05.png';
 import { CartContext } from '../Navbar/Dashboard/Cardcontext/Cardcontext';
+import axios from 'axios';
 
 const categories = ['salad', 'pizza', 'soup', 'dessert', 'drinks', 'offerd'];
 
 const OurShop = () => {
+  const [newlyAddedItem, setNewlyAddedItem] = useState(null);
+useEffect(() => {
+  if (newlyAddedItem) {
+    axios.post('http://localhost:5000/cart', newlyAddedItem)
+      .then(response => {
+        console.log('Successfully added to MongoDB:', response.data);
+      })
+      .catch(error => {
+        console.error('Error adding to MongoDB:', error);
+      });
+  }
+}, [newlyAddedItem]);
+
+
+//uppore backend data pathano hoyce
   const location = useLocation();
   const selectedIdFromMenu = location.state?.selectedId || null;
   const selectedIdNumber = Number(selectedIdFromMenu);
@@ -18,7 +34,8 @@ const OurShop = () => {
   const itemRefs = useRef({});
 
   // Cart context থেকে addToCart এবং cartItems নেওয়া হচ্ছে
-  const { addToCart, cartItems } = useContext(CartContext);
+  const { addToCart, cartItems } = useContext(CartContext);  
+  // Local cart context {backend data asle ata cmt korte hobe}
 
   useEffect(() => {
     if (!selectedIdFromMenu) return;
@@ -89,7 +106,8 @@ const OurShop = () => {
         confirmButtonText: 'Yes, add it!',
       }).then((result) => {
         if (result.isConfirmed) {
-          addToCart(item);
+          addToCart(item);   // Local cart context {backend data asle ata cmt korte hobe}
+            setNewlyAddedItem(item); // Backend MongoDB te pathanor jonno
           Swal.fire({
             title: 'Success',
             text: `"${item.name}" has been added to your cart successfully.`,

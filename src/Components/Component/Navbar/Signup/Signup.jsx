@@ -185,6 +185,7 @@ const Signup = () => {
             accept="image/*"
             onChange={handleFileChange}
             className="w-full text-white bg-gray-700 rounded-md p-1"
+            required={!photoFile} 
           />
 
           {/* প্রিভিউ দেখাও */}

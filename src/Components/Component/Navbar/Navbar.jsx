@@ -7,8 +7,8 @@ import Swal from 'sweetalert2';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import md5 from 'md5';
-import { useLocation } from 'react-router-dom'; // এটাও উপরে import করো
-// ensure md5 installed
+import { useLocation } from 'react-router-dom';
+import axios from 'axios'; // ✅ এখানে axios import করলাম
 
 const Navbar = () => {
     const location = useLocation();
@@ -24,36 +24,29 @@ const Navbar = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-   // Gravatar URL generator from email
-const getGravatarUrl = (email) => {
-    const fallbackImage = 'https://i.ibb.co/r2HPvHYt/p7.jpg';
-    if (!email) return fallbackImage;
-    const hash = md5(email.trim().toLowerCase());
-    return `https://www.gravatar.com/avatar/${hash}?d=${encodeURIComponent(fallbackImage)}&s=64`;
-};
+    const getGravatarUrl = (email) => {
+        const fallbackImage = 'https://i.ibb.co/r2HPvHYt/p7.jpg';
+        if (!email) return fallbackImage;
+        const hash = md5(email.trim().toLowerCase());
+        return `https://www.gravatar.com/avatar/${hash}?d=${encodeURIComponent(fallbackImage)}&s=64`;
+    };
 
-// Profile image resolver (handles all cases)
-const getProfileImage = () => {
-    const fallbackImage = 'https://i.ibb.co/r2HPvHYt/p7.jpg';
+    const getProfileImage = () => {
+        const fallbackImage = 'https://i.ibb.co/r2HPvHYt/p7.jpg';
 
-    if (currentUser) {
-        // 1. Check for valid photoURL
-        const photoURL = currentUser.photoURL;
-        if (photoURL && typeof photoURL === 'string' && photoURL.trim() !== '') {
-            return photoURL;
+        if (currentUser) {
+            const photoURL = currentUser.photoURL;
+            if (photoURL && typeof photoURL === 'string' && photoURL.trim() !== '') {
+                return photoURL;
+            }
+            if (currentUser.email) {
+                return getGravatarUrl(currentUser.email);
+            }
         }
+        return fallbackImage;
+    };
 
-        // 2. Else try gravatar if email exists
-        if (currentUser.email) {
-            return getGravatarUrl(currentUser.email);
-        }
-    }
-
-    // 3. Fallback to default image
-    return fallbackImage;
-};
-
-
+    // 🔥 JWT কুকি ক্লিয়ার করার জন্য backend logout কল এখানে যুক্ত করলাম
     const handleSignOut = () => {
         Swal.fire({
             title: 'Are you sure?',
@@ -63,26 +56,31 @@ const getProfileImage = () => {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, Sign out',
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-                SignoutUser()
-                    .then(() => {
-                        Swal.fire({
-                            title: 'Signed Out!',
-                            text: 'You have been successfully signed out.',
-                            icon: 'success',
-                            confirmButtonColor: '#3085d6',
-                        });
-                        setMenuOpen(false); // close menu on sign out
-                    })
-                    .catch(() => {
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Failed to sign out. Please try again.',
-                            icon: 'error',
-                            confirmButtonColor: '#d33',
-                        });
+                try {
+                    // Backend logout call - JWT token cookie ক্লিয়ার করার জন্য
+                    await axios.post('http://localhost:5000/logout', {}, { withCredentials: true });
+
+                    // Firebase logout
+                    await SignoutUser();
+
+                    Swal.fire({
+                        title: 'Signed Out!',
+                        text: 'You have been successfully signed out.',
+                        icon: 'success',
+                        confirmButtonColor: '#3085d6',
                     });
+
+                    setMenuOpen(false);
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to sign out. Please try again.',
+                        icon: 'error',
+                        confirmButtonColor: '#d33',
+                    });
+                }
             }
         });
     };
@@ -92,70 +90,68 @@ const getProfileImage = () => {
         setMenuOpen(false);
     };
 
-  const menuItems = (
-  <>
-    <Link
-      to="/"
-      className={`hover:text-yellow-400 transition duration-300 ease-in-out ${
-        currentPath === '/'
-          ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
-          : ''
-      }`}
-      onClick={handleLinkClick}
-    >
-      Home
-    </Link>
-    <Link
-      to="/contact"
-      className={`hover:text-yellow-400 transition duration-300 ease-in-out ${
-        currentPath === '/contact'
-          ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
-          : ''
-      }`}
-      onClick={handleLinkClick}
-    >
-      Contact Us
-    </Link>
-    <Link
-      to="/dashboard"
-      className={`hover:text-yellow-400 transition duration-300 ease-in-out ${
-        currentPath === '/dashboard'
-          ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
-          : ''
-      }`}
-      onClick={handleLinkClick}
-    >
-      Dashboard
-    </Link>
-    <Link
-      to="/menu"
-      className={`hover:text-yellow-400 transition duration-300 ease-in-out ${
-        currentPath === '/menu'
-          ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
-          : ''
-      }`}
-      onClick={handleLinkClick}
-    >
-      Menu
-    </Link>
-    <Link
-      to="/ourshop"
-      className={`text-green-400 font-bold flex items-center gap-2 transition duration-300 ease-in-out ${
-        currentPath === '/ourshop'
-          ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
-          : ''
-      }`}
-      onClick={handleLinkClick}
-    >
-      <span>Our Shop</span>
-      <span className="bg-green-400 rounded-full p-[4px]">
-        <FaShoppingCart className="text-white text-sm" />
-      </span>
-    </Link>
-  </>
-);
-
-
+    const menuItems = (
+        <>
+            <Link
+                to="/"
+                className={`hover:text-yellow-400 transition duration-300 ease-in-out ${
+                    currentPath === '/'
+                        ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
+                        : ''
+                }`}
+                onClick={handleLinkClick}
+            >
+                Home
+            </Link>
+            <Link
+                to="/contact"
+                className={`hover:text-yellow-400 transition duration-300 ease-in-out ${
+                    currentPath === '/contact'
+                        ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
+                        : ''
+                }`}
+                onClick={handleLinkClick}
+            >
+                Contact Us
+            </Link>
+            <Link
+                to="/dashboard"
+                className={`hover:text-yellow-400 transition duration-300 ease-in-out ${
+                    currentPath === '/dashboard'
+                        ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
+                        : ''
+                }`}
+                onClick={handleLinkClick}
+            >
+                Dashboard
+            </Link>
+            <Link
+                to="/menu"
+                className={`hover:text-yellow-400 transition duration-300 ease-in-out ${
+                    currentPath === '/menu'
+                        ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
+                        : ''
+                }`}
+                onClick={handleLinkClick}
+            >
+                Menu
+            </Link>
+            <Link
+                to="/ourshop"
+                className={`text-green-400 font-bold flex items-center gap-2 transition duration-300 ease-in-out ${
+                    currentPath === '/ourshop'
+                        ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
+                        : ''
+                }`}
+                onClick={handleLinkClick}
+            >
+                <span>Our Shop</span>
+                <span className="bg-green-400 rounded-full p-[4px]">
+                    <FaShoppingCart className="text-white text-sm" />
+                </span>
+            </Link>
+        </>
+    );
 
     return (
         <header className="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-black/60 via-black/40 to-black/60 backdrop-blur-lg shadow-lg text-white">
