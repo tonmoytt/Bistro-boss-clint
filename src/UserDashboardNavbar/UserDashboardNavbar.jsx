@@ -1,44 +1,69 @@
 import React from 'react';
-import { FaHome, FaShoppingCart, FaList, FaStar, FaHistory, FaCalendarAlt, FaUtensils, FaPhone } from 'react-icons/fa';
+import {
+    FaHome, FaShoppingCart, FaList, FaStar, FaHistory,
+    FaCalendarAlt, FaUtensils, FaPhone
+} from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
-const UserDashboardNavbar = () => {
+const UserDashboardNavbar = ({ onClose }) => {
     return (
-        <div className="flex h-screen overflow-hidden bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white">
-            {/* Sidebar */}
-            <aside className="w-64 bg-orange-100 dark:bg-orange-800 p-6 flex flex-col justify-between shadow-md">
-                <div>
-                    <h2 className="text-2xl font-bold mb-6">BISTRO BOSS<br /><span className="text-sm font-normal">RESTAURANT</span></h2>
-                    <ul className="space-y-4 text-lg font-medium">
-                        <Link to=''>  <li className="flex items-center gap-2 mb-4"><FaHome /> User Home</li> </Link> 
-                        <Link to='booking'>
-                            <li className="flex items-center gap-2 my-4"><FaCalendarAlt /> Reservation</li>
-                        </Link>
-                        <Link to='paymenthistory'>  <li className="flex items-center gap-2 my-4"><FaHistory /> Payment History</li>   </Link>
-                        <Link to='mycart'>  <li className="flex items-center gap-2 my-4"><FaShoppingCart /> My Cart</li>   </Link>
-                        <Link to=' '>  <li className="flex items-center gap-2 my-4"><FaStar /> Add Review</li>   </Link>
-                        <Link to=''>   <li className="flex items-center gap-2 my-4"><FaUtensils /> My Booking</li>   </Link>
-                    </ul>
-                    <div className="border-t border-gray-300 dark:border-gray-600 my-6"></div>
-                    <ul className="space-y-4 text-lg font-medium">
+        <aside className="w-64 min-h-screen bg-orange-100 dark:bg-orange-800 text-gray-800 dark:text-white p-4 lg:relative shadow-md">
+            {/* Close Button for Mobile */}
+            <div className="lg:hidden flex justify-end mb-4">
+                <button onClick={onClose} className="text-3xl font-bold">✕</button>
+            </div>
 
+            <h2 className="text-2xl font-bold mb-2 text-center leading-tight">
+                BISTRO BOSS<br />
+                <span className="text-sm font-normal">RESTAURANT</span>
+            </h2>
 
+            <nav className="flex flex-col gap-5 mt-6 text-lg font-medium">
+                {/* User Links */}
+                <Link to="" onClick={onClose} className="flex items-center gap-3 hover:text-yellow-600 transition-colors">
+                    <FaHome /> User Home
+                </Link>
 
+                <Link to="booking" onClick={onClose} className="flex items-center gap-3 hover:text-yellow-600 transition-colors">
+                    <FaCalendarAlt /> Reservation
+                </Link>
 
+                <Link to="paymenthistory" onClick={onClose} className="flex items-center gap-3 hover:text-yellow-600 transition-colors">
+                    <FaHistory /> Payment History
+                </Link>
 
+                <Link to="mycart" onClick={onClose} className="flex items-center gap-3 hover:text-yellow-600 transition-colors">
+                    <FaShoppingCart /> My Cart
+                </Link>
 
-                        <Link to='/'>  <li className="flex items-center gap-2 my-4"><FaHome /> Home</li></Link>
-                        <Link to='/menu'>  <li className="flex items-center gap-2 my-4"><FaList /> Menu</li></Link>
-                        <Link to='/ourshop'> <li className="flex items-center gap-2 my-4"><FaShoppingCart /> Shop</li></Link>
-                        <Link to='/contact'> <li className="flex items-center gap-2 my-4"><FaPhone /> Contact</li></Link>
+                <Link to="" onClick={onClose} className="flex items-center gap-3 hover:text-yellow-600 transition-colors">
+                    <FaStar /> Add Review
+                </Link>
 
-                    </ul>
+                <Link to="" onClick={onClose} className="flex items-center gap-3 hover:text-yellow-600 transition-colors">
+                    <FaUtensils /> My Booking
+                </Link>
 
-                </div>
-            </aside>
+                <hr className="my-6 border-gray-300 dark:border-gray-600" />
 
+                {/* Common Links */}
+                <Link to="/" onClick={onClose} className="flex items-center gap-3 hover:text-yellow-600 transition-colors">
+                    <FaHome /> Home
+                </Link>
 
-        </div>
+                <Link to="/menu" onClick={onClose} className="flex items-center gap-3 hover:text-yellow-600 transition-colors">
+                    <FaList /> Menu
+                </Link>
+
+                <Link to="/ourshop" onClick={onClose} className="flex items-center gap-3 hover:text-yellow-600 transition-colors">
+                    <FaShoppingCart /> Shop
+                </Link>
+
+                <Link to="/contact" onClick={onClose} className="flex items-center gap-3 hover:text-yellow-600 transition-colors">
+                    <FaPhone /> Contact
+                </Link>
+            </nav>
+        </aside>
     );
 };
 
