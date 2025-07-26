@@ -8,6 +8,13 @@ import img4 from './../../../assets/menu picture/p5.jpg';
 import img5 from './../../../assets/menu picture/choumin.jpg';
 import { Link } from 'react-router-dom';
 
+// Price formatting helper (number to $xx.xx)
+const formatPrice = (price) => {
+  // Remove any non-digit except dot, then parse float and fix 2 decimals
+  const number = parseFloat(price.replace(/[^0-9.]/g, ''));
+  return number ? `$${number.toFixed(2)}` : price;
+};
+
 const menuItems = [
   {
     id: 1,
@@ -54,23 +61,27 @@ const menuItems = [
 ];
 
 const CheckMenu = () => {
-  // Split menuItems in half for 2 columns
   const half = Math.ceil(menuItems.length / 2);
   const firstHalf = menuItems.slice(0, half);
   const secondHalf = menuItems.slice(half);
 
   const renderMenuItems = (items) =>
     items.map(({ id, name, price, description, img }) => (
-      <div key={id} className="flex items-center mb-6 last:mb-0">
+      <div
+        key={id}
+        className="flex items-center mb-6 last:mb-0 p-3 rounded-lg transition-shadow duration-300 hover:shadow-lg hover:bg-yellow-50"
+      >
         <img
           className="w-14 h-14 rounded-b-full rounded-tr-full mr-4 object-cover"
           src={img}
-          alt={name}
+          alt={`${name} dish image`}
+          loading="lazy" // ✅ lazy loading
+          decoding="async"
         />
         <div className="flex-1">
           <div className="flex justify-between items-center mb-1">
             <h1 className="text-xl font-semibold">{name}</h1>
-            <p className="text-yellow-500 font-semibold">{price}</p>
+            <p className="text-yellow-500 font-semibold">{formatPrice(price)}</p> {/* ✅ formatted price */}
           </div>
           <p className="text-sm text-gray-600 leading-snug">{description}</p>
         </div>
@@ -87,10 +98,11 @@ const CheckMenu = () => {
       </div>
 
       <div className="mt-12 text-center">
-        <Link to='/menu'> <button className="relative inline-block text-black font-semibold px-6 py-3 rounded-md hover:text-yellow-500 transition-colors duration-300">
-          View Full Menu
-          <span className="absolute left-0 bottom-0 w-full h-[3px] rounded-b-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600"></span>
-        </button>
+        <Link to="/menu">
+          <button className="relative inline-block text-black font-semibold px-6 py-3 rounded-md hover:text-yellow-500 transition-colors duration-300">
+            View Full Menu
+            <span className="absolute left-0 bottom-0 w-full h-[3px] rounded-b-xl bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600"></span>
+          </button>
         </Link>
       </div>
     </div>

@@ -21,6 +21,18 @@ import CartContextProvider from './Components/Component/Navbar/Dashboard/Cardcon
 // Import Toaster from react-hot-toast
 import { Toaster } from 'react-hot-toast';
 import PrivetRoute from './Components/Authincation/PrivetRoute/PrivetRoute';
+import DashBoardmain from './DashBoardmain/DashBoardmain';
+import UserDashboard from './UserDashboardNavbar/UserDashboardNavbar';
+import Addmenu from './DashBoardmain/Addmenu/Addmenu';
+import DashboardNavbar from './DashBoardmain/DashboardNavbar/DashboardNavbar';
+import DashboardRoot from './Components/Root/DashboardRoot/DashboardRoot';
+import ManageAllItems from './DashBoardmain/ManageAllItems/ManageAllItems';
+import ManageAllBookings from './DashBoardmain/ManageAllBookings/ManageAllBookings';
+import Allusers from './DashBoardmain/Allusers/Allusers';
+import UserHome from './UserDashboardNavbar/UserHome/UserHome';
+import UserRoot from './Components/Root/UserRoot/UserRoot';
+import Tablebooking from './UserDashboardNavbar/Tablebooking/Tablebooking';
+import PaymentHistory from './UserDashboardNavbar/PaymentHistory/PaymentHistory';
 
 const router = createBrowserRouter([
   {
@@ -44,33 +56,95 @@ const router = createBrowserRouter([
         path: '/contact',
         element: <ContactUs></ContactUs>
       },
-      {
-        path: '/dashboard',
-        element: <PrivetRoute><Dashboard></Dashboard></PrivetRoute> 
-      },
+      
       {
         path: '/menu',
         element: <OurMenu></OurMenu>
       },
       {
         path: '/ourshop',
-        element: <PrivetRoute><OurShop></OurShop></PrivetRoute> 
+        element: <PrivetRoute><OurShop></OurShop></PrivetRoute>
+      },
+
+
+      {
+        path: '/userdashboard',
+        element: <PrivetRoute><UserDashboard></UserDashboard></PrivetRoute>
       },
     ]
   },
+
+  {
+    path: '/admindashboard',
+    element: <DashboardRoot />,
+    children: [
+      {
+        index: true, // ✅ এটা যুক্ত করো — default path
+        element: <PrivetRoute><DashBoardmain /></PrivetRoute>
+      },
+      {
+        path: 'dashboardmain', // optional (can remove if not used directly)
+        element: <PrivetRoute><DashBoardmain /></PrivetRoute>
+      },
+      {
+        path: 'addmenu',
+        element: <PrivetRoute><Addmenu /></PrivetRoute>
+      },
+      {
+        path: 'allitems',
+        element: <PrivetRoute><ManageAllItems /></PrivetRoute>
+      },
+      {
+        path: 'managebookings',
+        element: <PrivetRoute><ManageAllBookings /></PrivetRoute>
+      },
+      {
+        path: 'allusers',
+        element: <PrivetRoute><Allusers /></PrivetRoute>
+      },
+    ]
+  },
+  {
+    path: '/userdashboard',
+    element: <UserRoot />,
+    children: [
+      {
+        index: true, // ✅ এটা যুক্ত করো — default path
+        element: <PrivetRoute><UserHome/></PrivetRoute>
+      },
+      {
+        path: 'booking',
+        element: <PrivetRoute><Tablebooking /></PrivetRoute>
+      },
+      {
+        path: 'mycart',
+        element: <PrivetRoute><Dashboard></Dashboard></PrivetRoute>
+      },
+      {
+        path: 'paymenthistory',
+        element: <PrivetRoute><PaymentHistory/></PrivetRoute>
+      },
+    ]
+  },
+
+
 ]);
+
+
+
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <div className='max-w-screen-xl mx-auto'>
+    <div className=' mx-auto'>
       <Authincation>
         <CartContextProvider>
           <HelmetProvider>
             <>
               <RouterProvider router={router} />
               {/* Toaster should be placed here once */}
-              <Toaster 
-                position="top-right" 
+              <Toaster
+                position="top-right"
                 toastOptions={{
                   style: {
                     borderRadius: '8px',

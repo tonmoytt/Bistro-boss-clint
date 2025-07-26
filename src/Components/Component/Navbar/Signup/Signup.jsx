@@ -1,14 +1,21 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../Authincation/Authincation';
 import Swal from 'sweetalert2';
 import { Helmet } from 'react-helmet-async';
-
+import uploadFileToFirebase from '../../../utils/uploadFileToFirebase'; // path ঠিক রাখো
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import auth from '../../../Authincation/Firebase.init.js/Firebase.init';
+import axios from 'axios';
+import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
 
 const Signup = () => {
-  const { Signup, updateUserProfile } = useContext(AuthContext);
+  const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+
+  useEffect(() => {
+    loadCaptchaEnginge(6);
+  }, [])
+  const { signupUser, updateUserProfile } = useContext(AuthContext);
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [photoFile, setPhotoFile] = useState(null);
@@ -25,16 +32,18 @@ const Signup = () => {
     }
   };
 
+
+
   const handleSubmit = async e => {
     e.preventDefault();
+
     const form = e.target;
     const displayName = form.displayName.value.trim();
-    const email = form.email.value.trim();
+    const email = form.email.value.toLowerCase().trim(); // ✅ always lowercase + trim
     const password = form.password.value;
     const confirm = form.confirm.value;
-    const photoURL = form.photoURL.value.trim() || null;
 
-    // Validation
+    // Validate
     if (!email) return setError('Email is required');
     if (!password) return setError('Password is required');
     if (!confirm) return setError('Please confirm your password');
@@ -46,24 +55,41 @@ const Signup = () => {
 
     setError('');
 
+    // Create FormData
+    const formData = new FormData();
+    formData.append('photo', photoFile);
+    formData.append('name', displayName);
+    formData.append('email', email);
+    formData.append('createdAt', new Date().toISOString());
+
     try {
-      const result = await Signup(email, password);
+      // Signup with Firebase
+      const result = await signupUser(email, password);
+      const firebaseUser = result.user;
+      formData.append('uid', firebaseUser.uid);
 
-      // এখানে তুমি যদি photoFile থাকে, তাহলে সেটা Firebase Storage ইত্যাদিতে আপলোড করো, নাহলে photoURL ইউজ করো
-      let finalPhotoURL = photoURL;
+      // Backend save
+      try {
+        const res = await axios.post('http://localhost:5000/users', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
 
-      if (photoFile) {
-        // TODO: এখানে Firebase Storage বা অন্য কোন স্টোরেজে আপলোডের কোড লাগবে
-        // const uploadResult = await uploadFileToStorage(photoFile);
-        // finalPhotoURL = uploadResult.url;
-        // এখন শুধু ইউজার লোকাল ফাইল থেকে ছবি দিলে আমরা সেটা আপলোড করার কোড দিতে হবে
-        // আপলোডের কোড না থাকলে এইখানে photoURL রাখবে null বা empty
-        // (upload logic যোগ করতে চাও বলো)
-        finalPhotoURL = preview; // অস্থায়ী, শুধু প্রিভিউ দেখানোর জন্য
+        if (res.status === 200 || res.status === 201) {
+          console.log('✅ User saved to backend');
+        } else {
+          console.warn('⚠️ Unexpected response from backend:', res.status);
+        }
+      } catch (postError) {
+        console.warn("❌ Failed to save user data to backend.", postError);
       }
 
-      await updateUserProfile(displayName, finalPhotoURL);
+      // Profile update
+      const defaultPhoto = 'https://i.ibb.co/SDjzwBSF/p6.jpg';
+      await updateUserProfile(displayName, defaultPhoto);
 
+      // Success
       Swal.fire({
         title: 'Account Created!',
         text: 'Redirecting to login...',
@@ -80,9 +106,11 @@ const Signup = () => {
       form.reset();
       setPhotoFile(null);
       setPreview(null);
+
     } catch (error) {
       console.error(error);
       setError(error.message);
+
       Swal.fire({
         title: 'Signup Failed!',
         text: error.message,
@@ -95,38 +123,43 @@ const Signup = () => {
     }
   };
 
-  const googleHandle = () => {
+
+
+
+  const googleHandle = async () => {
     const provider = new GoogleAuthProvider();
 
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const user = result.user;
-        console.log('Google user:', user);
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
 
-        Swal.fire({
-          title: 'Logged in with Google!',
-          icon: 'success',
-          timer: 3000,
-          showConfirmButton: false,
-          background: '#f0fdf4',
-          color: '#064e3b',
-        });
+      // ✅ Google user profile update (no conflict)
+      await updateUserProfile(user.displayName, user.photoURL);
 
-        navigate('/');
-      })
-      .catch((error) => {
-        console.error('Google Login Error:', error);
-        Swal.fire({
-          title: 'Google Login Failed!',
-          text: error.message,
-          icon: 'error',
-          confirmButtonText: 'Try Again',
-          confirmButtonColor: '#ef4444',
-          background: '#fef2f2',
-          color: '#991b1b',
-        });
+      Swal.fire({
+        title: 'Logged in with Google!',
+        icon: 'success',
+        timer: 3000,
+        showConfirmButton: false,
+        background: '#f0fdf4',
+        color: '#064e3b',
       });
+
+      navigate('/');
+    } catch (error) {
+      console.error('Google Login Error:', error);
+      Swal.fire({
+        title: 'Google Login Failed!',
+        text: error.message,
+        icon: 'error',
+        confirmButtonText: 'Try Again',
+        confirmButtonColor: '#ef4444',
+        background: '#fef2f2',
+        color: '#991b1b',
+      });
+    }
   };
+
 
   return (
     <div>
@@ -169,15 +202,48 @@ const Signup = () => {
             className="w-full px-4 py-2 rounded-md bg-white text-black focus:outline-none"
             required
           />
+         <div>
+  
+    <LoadCanvasTemplate />
+  
+  <input
+    type="text"
+    name="captcha"
+    placeholder="Type the text you see above"
+    className={`w-full px-4 py-2 rounded-md bg-white text-black focus:outline-none ${
+      !isCaptchaValid ? 'border border-red-400' : ''
+    }`}
+    onBlur={(e) => {
+      const isValid = validateCaptcha(e.target.value);
+      setIsCaptchaValid(isValid);
+      if (!isValid) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Captcha Incorrect!',
+          text: 'Please try again.',
+          background: '#fef2f2',
+          color: '#991b1b',
+        });
+      }
+    }}
+    required
+  />
+  {!isCaptchaValid && (
+    <p className="text-red-400 text-xs mt-1">Please enter valid captcha</p>
+  )}
+</div>
+
+
+
 
           {/* Photo URL ইনপুট */}
-          <input
+          {/* <input
             type="text"
             name="photoURL"
             placeholder="Photo URL (optional)"
             className="w-full px-4 py-2 rounded-md bg-white text-black focus:outline-none"
             disabled={!!photoFile} // যদি file সিলেক্ট করা থাকে URL disable করে দাও
-          />
+          /> */}
 
           {/* File picker */}
           <input
@@ -185,7 +251,7 @@ const Signup = () => {
             accept="image/*"
             onChange={handleFileChange}
             className="w-full text-white bg-gray-700 rounded-md p-1"
-            required={!photoFile} 
+            required={!photoFile}
           />
 
           {/* প্রিভিউ দেখাও */}
@@ -201,10 +267,15 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="w-full py-2 bg-purple-500 hover:bg-blue-500 transition-colors rounded-md text-white font-semibold"
+            className={`w-full py-2 transition-colors rounded-md text-white font-semibold ${isCaptchaValid
+                ? 'bg-purple-500 hover:bg-blue-500'
+                : 'bg-gray-500 cursor-not-allowed'
+              }`}
+            disabled={!isCaptchaValid}
           >
             Sign up
           </button>
+
 
           <div className="text-center">
             <button className="text-sm text-gray-300 hover:text-white transition" type="button">

@@ -19,7 +19,7 @@ const Authincation = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loding, setloding] = useState(true);
 
-  const Signup = (email, password) => {
+  const signupUser = (email, password) => {
     setloding(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
@@ -49,50 +49,60 @@ const Authincation = ({ children }) => {
     return signInWithPopup(auth, provider);
   };
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      console.log('Current user:', user);
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    console.log('Current user:', user);
+    setCurrentUser(user);
+
+    if (user?.email) {
+      const emailUser = { email: user.email };
+
+      // 🔐 Send JWT token
+      axios.post('http://localhost:5000/jwt', emailUser, { withCredentials: true })
+        .then(res => {
+          console.log('JWT sent, token stored in cookie:', res.data);
+        })
+        .catch(error => {
+          console.error('JWT error:', error.message);
+        });
+
+      // ⬇️ Backend user creation or update
+      const backendUser = {
+        name: user.displayName || 'Unnamed User',
+        email: user.email,
+        photoURL: user.photoURL || '',
+        uid: user.uid,
+        createdAt: new Date().toISOString()
+      };
+
+      try {
+        await axios.post('http://localhost:5000/users', backendUser);
+        console.log('User info saved to DB');
+      } catch (error) {
+        console.error('User info save error:', error.message);
+      }
+
+    } else {
+      // 🔐 Remove cookie on logout
+      axios.post('http://localhost:5000/logout', {}, { withCredentials: true })
+        .then(data => console.log('Logout success:', data.data))
+        .catch(error => console.error('Logout error:', error.message));
+    }
+
+    // 🔄 Force user refresh
+    if (user) {
+      await user.reload();
       setCurrentUser(user);
+    } else {
+      setCurrentUser(null);
+    }
 
-      if (user?.email) {
-        const emailUser = { email: user.email };
+    setloding(false);
+  });
 
-        axios.post('http://localhost:5000/jwt', emailUser, { withCredentials: true })
-          .then(res => {
-            console.log('JWT sent, token stored in cookie:', res.data);
-          })
-          .catch(error => {
-            console.error('JWT error:', error.message);
-          })
-          .finally(() => setloding(false));
-      } else {
-        axios.post('http://localhost:5000/logout', {}, { withCredentials: true })
-          .then(data => console.log('Logout success:', data.data))
-          .catch(error => console.error('Logout error:', error.message))
-          .finally(() => setloding(false));
-      }
+  return () => unsubscribe();
+}, []);
 
-      // jwt token created successfully and stored in cookies
-
-
-
-
-
-      // normally photo URL an displayname after login functionnaly code
-      
-      if (user) {
-        await user.reload();
-        setCurrentUser(user);
-      } else {
-        setCurrentUser(null);
-      }
-
-
-
-    });
-
-    return () => unsubscribe(); // ✅ This must be outside the auth listener
-  }, []);
 
 
 
@@ -100,7 +110,7 @@ const Authincation = ({ children }) => {
 
 
   const Authinfo = {
-    Signup,
+    signupUser,
     Login,
     SignoutUser,
     updateUserProfile,

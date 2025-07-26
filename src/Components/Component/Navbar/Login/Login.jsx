@@ -19,7 +19,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const email = form.email.value;
+    const email = form.email.value.toLowerCase(); // 🔥 Lowercase করে নিচ্ছি;
     const password = form.password.value;
     const checkbox = form.checkbox.checked;
 
@@ -43,6 +43,8 @@ const Login = () => {
       );
 
       if (data.success) {
+         // ✅ এখানে token localStorage এ সেট করো
+    localStorage.setItem('access-token', data.token);
         Swal.fire({
           title: 'Login Successful!',
           text: `Welcome back, ${user.email}`,

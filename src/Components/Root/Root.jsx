@@ -1,16 +1,21 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Footer from '../Component/Footer/Footer';
 import Navbar from '../Component/Navbar/Navbar';
  
 
 const Root = () => {
+    const location = useLocation()
+    const isloginpage= location.pathname.includes('login') || location.pathname.includes('signup') || location.pathname.includes('dashboardmain') 
+     
+  const Dashboard = location.pathname.includes('dashboardmain') || location.pathname.includes('addmenu')
     return (
         <div>
             
-            <Navbar></Navbar>
+          
+            {Dashboard ||  <Navbar></Navbar>}  
             <Outlet></Outlet>
-            <Footer></Footer>
+           {isloginpage || <Footer></Footer>}
         </div>
     );
 };

@@ -24,6 +24,28 @@ const Navbar = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    // backend er photoURL er jonno
+    const [backendPhoto, setBackendPhoto] = useState(null);
+    useEffect(() => {
+        const fetchBackendPhoto = async () => {
+            if (currentUser?.email) {
+                try {
+                    const encodedEmail = encodeURIComponent(currentUser.email.toLowerCase());
+                    const res = await axios.get(`http://localhost:5000/users/${encodedEmail}`, {
+                        withCredentials: true,
+                    });
+
+                    console.log('User photo:', res.data.photoURL);
+                    setBackendPhoto(res.data.photoURL || null);
+                } catch (err) {
+                    console.error('Failed to fetch backend image:', err);
+                }
+            }
+        };
+
+        fetchBackendPhoto();
+    }, [currentUser]);
+
     const getGravatarUrl = (email) => {
         const fallbackImage = 'https://i.ibb.co/r2HPvHYt/p7.jpg';
         if (!email) return fallbackImage;
@@ -34,20 +56,15 @@ const Navbar = () => {
     const getProfileImage = () => {
         const fallbackImage = 'https://i.ibb.co/r2HPvHYt/p7.jpg';
 
-        if (currentUser) {
-            const photoURL = currentUser.photoURL;
-            if (photoURL && typeof photoURL === 'string' && photoURL.trim() !== '') {
-                return photoURL;
-            }
-            if (currentUser.email) {
-                return getGravatarUrl(currentUser.email);
-            }
-        }
+        if (backendPhoto) return backendPhoto;
+        if (currentUser?.email) return getGravatarUrl(currentUser.email);
         return fallbackImage;
     };
 
     // 🔥 JWT কুকি ক্লিয়ার করার জন্য backend logout কল এখানে যুক্ত করলাম
     const handleSignOut = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setMenuOpen(false);
         Swal.fire({
             title: 'Are you sure?',
             text: "You will be signed out!",
@@ -94,55 +111,50 @@ const Navbar = () => {
         <>
             <Link
                 to="/"
-                className={`hover:text-yellow-400 transition duration-300 ease-in-out ${
-                    currentPath === '/'
-                        ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
-                        : ''
-                }`}
+                className={`hover:text-yellow-400 transition duration-300 ease-in-out ${currentPath === '/'
+                    ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
+                    : ''
+                    }`}
                 onClick={handleLinkClick}
             >
                 Home
             </Link>
             <Link
                 to="/contact"
-                className={`hover:text-yellow-400 transition duration-300 ease-in-out ${
-                    currentPath === '/contact'
-                        ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
-                        : ''
-                }`}
+                className={`hover:text-yellow-400 transition duration-300 ease-in-out ${currentPath === '/contact'
+                    ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
+                    : ''
+                    }`}
                 onClick={handleLinkClick}
             >
                 Contact Us
             </Link>
             <Link
-                to="/dashboard"
-                className={`hover:text-yellow-400 transition duration-300 ease-in-out ${
-                    currentPath === '/dashboard'
-                        ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
-                        : ''
-                }`}
+                to="/userdashboard"
+                className={`hover:text-yellow-400 transition duration-300 ease-in-out ${currentPath === '/dashboard'
+                    ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
+                    : ''
+                    }`}
                 onClick={handleLinkClick}
             >
                 Dashboard
             </Link>
             <Link
                 to="/menu"
-                className={`hover:text-yellow-400 transition duration-300 ease-in-out ${
-                    currentPath === '/menu'
-                        ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
-                        : ''
-                }`}
+                className={`hover:text-yellow-400 transition duration-300 ease-in-out ${currentPath === '/menu'
+                    ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
+                    : ''
+                    }`}
                 onClick={handleLinkClick}
             >
                 Menu
             </Link>
             <Link
                 to="/ourshop"
-                className={`text-green-400 font-bold flex items-center gap-2 transition duration-300 ease-in-out ${
-                    currentPath === '/ourshop'
-                        ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
-                        : ''
-                }`}
+                className={`text-green-400 font-bold flex items-center gap-2 transition duration-300 ease-in-out ${currentPath === '/ourshop'
+                    ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
+                    : ''
+                    }`}
                 onClick={handleLinkClick}
             >
                 <span>Our Shop</span>
@@ -171,25 +183,28 @@ const Navbar = () => {
                             <>
                                 <button
                                     onClick={handleSignOut}
-                                    className="cursor-pointer rounded-full font-semibold hover:text-yellow-400 transition"
+                                    // className="cursor-pointer rounded-full font-semibold hover:text-yellow-400 transition"
+                                    className={` hover:cursor-pointer text-yellow-400 transition duration-300 ease-in-out  animate-pulse scale-105
+                     
+                    }`}
                                 >
                                     Sign Out
                                 </button>
 
                                 {isDesktop ? (
                                     <div className="relative group">
-                                        <Tooltip
-                                            anchorSelect="#user-avatar"
-                                            place="bottom"
-                                            content={currentUser.displayName || currentUser.email || 'No Name'}
-                                        />
+
                                         <img
                                             id="user-avatar"
                                             src={getProfileImage()}
                                             alt="profile"
+                                            data-tooltip-id="user-name-tooltip"
+                                            data-tooltip-content={currentUser.displayName || currentUser.email}
                                             className="w-9 h-9 rounded-full object-cover border-2 border-yellow-400 hover:scale-110 transition duration-200"
                                             loading="lazy"
                                         />
+                                        <Tooltip id="user-name-tooltip" place="bottom" />
+
                                     </div>
                                 ) : (
                                     <img
