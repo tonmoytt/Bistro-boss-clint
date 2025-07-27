@@ -70,7 +70,7 @@ const Signup = () => {
 
       // Backend save
       try {
-        const res = await axios.post('http://localhost:5000/users', formData, {
+        const res = await axios.post(('http://localhost:5000/users'), formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }

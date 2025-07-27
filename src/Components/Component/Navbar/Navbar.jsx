@@ -77,7 +77,7 @@ const Navbar = () => {
             if (result.isConfirmed) {
                 try {
                     // Backend logout call - JWT token cookie ক্লিয়ার করার জন্য
-                    await axios.post('http://localhost:5000/logout', {}, { withCredentials: true });
+                    await axios.post(('http://localhost:5000/logout'), {}, { withCredentials: true });
 
                     // Firebase logout
                     await SignoutUser();

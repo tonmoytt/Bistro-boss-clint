@@ -15,7 +15,7 @@ const OurShop = () => {
   const [newlyAddedItem, setNewlyAddedItem] = useState(null);
   useEffect(() => {
     if (newlyAddedItem) {
-      axios.post( 'http://localhost:5000/cart', newlyAddedItem ,{
+      axios.post( ( 'http://localhost:5000/cart'), newlyAddedItem ,{
          withCredentials: true // token cookie allow করবে
       })
         .then(data => {
