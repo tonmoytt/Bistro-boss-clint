@@ -58,7 +58,7 @@ useEffect(() => {
       const emailUser = { email: user.email };
 
       // 🔐 Send JWT token
-      axios.post('https://bistro-boss-server-two-gamma.vercel.app/jwt', emailUser, { withCredentials: true })
+      axios.post(' https://bistro-boss-server-two-gamma.vercel.app/jwt', emailUser, { withCredentials: true })
         .then(res => {
           console.log('JWT sent, token stored in cookie:', res.data);
         })
@@ -76,7 +76,7 @@ useEffect(() => {
       };
 
       try {
-        await axios.post('https://bistro-boss-server-two-gamma.vercel.app/users', backendUser);
+        await axios.post(' https://bistro-boss-server-two-gamma.vercel.app/users', backendUser);
         console.log('User info saved to DB');
       } catch (error) {
         console.error('User info save error:', error.message);
@@ -84,7 +84,7 @@ useEffect(() => {
 
     } else {
       // 🔐 Remove cookie on logout
-      axios.post('https://bistro-boss-server-two-gamma.vercel.app/logout', {}, { withCredentials: true })
+      axios.post(' https://bistro-boss-server-two-gamma.vercel.app/logout', {}, { withCredentials: true })
         .then(data => console.log('Logout success:', data.data))
         .catch(error => console.error('Logout error:', error.message));
     }

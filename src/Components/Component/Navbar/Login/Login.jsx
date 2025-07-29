@@ -37,7 +37,7 @@ const Login = () => {
       // JWT token generate করার জন্য backend এ request পাঠানো
       // এখানে withCredentials:true দরকার যাতে cookie সঠিকভাবে সেট হয়
       const { data } = await axios.post(
-        'https://bistro-boss-server-two-gamma.vercel.app/jwt',
+        ' https://bistro-boss-server-two-gamma.vercel.app/jwt',
         { email: user.email },
         { withCredentials: true }
       );

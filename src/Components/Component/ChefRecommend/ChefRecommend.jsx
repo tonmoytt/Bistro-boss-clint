@@ -23,7 +23,7 @@ const ChefRecommend = () => {
   // ✅ 2. Load items already added to cart from backend
   useEffect(() => {
     if (currentUser && token) {
-      axios.get(`https://bistro-boss-server-two-gamma.vercel.app/get-chef?email=${currentUser.email.toLowerCase()}`, {
+      axios.get(` https://bistro-boss-server-two-gamma.vercel.app/get-chef?email=${currentUser.email.toLowerCase()}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -64,7 +64,7 @@ const ChefRecommend = () => {
           userEmail: currentUser.email.toLowerCase()
         };
 
-        axios.post('https://bistro-boss-server-two-gamma.vercel.app/chef', cartItem, {
+        axios.post(' https://bistro-boss-server-two-gamma.vercel.app/chef', cartItem, {
           headers: {
             Authorization: `Bearer ${token}`
           }

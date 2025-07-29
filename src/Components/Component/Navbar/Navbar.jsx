@@ -31,7 +31,7 @@ const Navbar = () => {
             if (currentUser?.email) {
                 try {
                     const encodedEmail = encodeURIComponent(currentUser.email.toLowerCase());
-                    const res = await axios.get(`https://bistro-boss-server-two-gamma.vercel.app/users/${encodedEmail}`, {
+                    const res = await axios.get(` https://bistro-boss-server-two-gamma.vercel.app/users/${encodedEmail}`, {
                         withCredentials: true,
                     });
 
@@ -77,7 +77,7 @@ const Navbar = () => {
             if (result.isConfirmed) {
                 try {
                     // Backend logout call - JWT token cookie ক্লিয়ার করার জন্য
-                    await axios.post(('https://bistro-boss-server-two-gamma.vercel.app/logout'), {}, { withCredentials: true });
+                    await axios.post((' https://bistro-boss-server-two-gamma.vercel.app/logout'), {}, { withCredentials: true });
 
                     // Firebase logout
                     await SignoutUser();

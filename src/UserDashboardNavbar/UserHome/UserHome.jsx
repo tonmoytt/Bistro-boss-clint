@@ -8,7 +8,7 @@ const UserHome = () => {
     const { currentUser } = useContext(AuthContext)
 
     useEffect(() => {
-        axios.get(`https://bistro-boss-server-two-gamma.vercel.app/get-user/${currentUser.email.toLowerCase()}`, {
+        axios.get(` https://bistro-boss-server-two-gamma.vercel.app/get-user/${currentUser.email.toLowerCase()}`, {
             withCredentials: true
         })
 
@@ -63,8 +63,8 @@ const UserHome = () => {
                                 className="w-full h-full object-cover"
                             />
                         </div>
-                        <h2 className="text-xl font-semibold">{profile.name || 'AWLAD HOSSAIN'}</h2>
-                        <p className="text-red-500 text-sm">{profile.email || 'tonmoytafsirul9@gmail.com'}</p>
+                        <h2 className="text-xl font-semibold">{profile.name  }</h2>
+                        <p className="text-red-500 text-sm">{profile.email  }</p>
                     </div>
 
                     {/* Activity */}
