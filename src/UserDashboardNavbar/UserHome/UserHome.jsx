@@ -1,9 +1,28 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../../Components/Authincation/Authincation';
+import { Link } from 'react-router-dom';
 
 const UserHome = () => {
+    const [profile, setProfile] = useState({})
+    const { currentUser } = useContext(AuthContext)
+
+    useEffect(() => {
+        axios.get(`https://bistro-boss-server-two-gamma.vercel.app/get-user/${currentUser.email.toLowerCase()}`, {
+            withCredentials: true
+        })
+
+            .then(response => {
+                setProfile(response.data);
+            })
+            .catch(error => {
+                console.error('Failed to fetch profile:', error);
+            });
+    }, []);
+
     return (
         <div>
-             {/* Main Content */}
+            {/* Main Content */}
             <main className="flex-1 p-6 overflow-auto">
                 <h1 className="text-xl font-semibold mb-6">HI, WELCOME BACK!</h1>
 
@@ -11,17 +30,24 @@ const UserHome = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div className="bg-gradient-to-r from-purple-500 to-pink-400 text-white rounded-xl p-4 shadow-md">
                         <p className="text-sm">📅</p>
-                        <h2 className="text-2xl font-bold">205</h2>
-                        <p>Menu</p>
+                        <Link to='/menu'> <div>
+                            <h2 className="text-2xl font-bold">205</h2>
+                            <p>Menu</p>
+                        </div>
+                        </Link>
                     </div>
                     <div className="bg-gradient-to-r from-amber-300 to-orange-100 text-white rounded-xl p-4 shadow-md">
                         <p className="text-sm">🛒</p>
-                        <h2 className="text-2xl font-bold">103</h2>
-                        <p>Shop-Item</p>
+                        <Link to='/ourshop'> <div>
+                            <h2 className="text-2xl font-bold">103</h2>
+                            <p>Shop-Item</p>
+                        </div>  </Link>
+
+
                     </div>
                     <div className="bg-gradient-to-r from-pink-500 to-pink-300 text-white rounded-xl p-4 shadow-md">
                         <p className="text-sm">📞</p>
-                        <h2 className="text-2xl font-bold">013xxxxxxxx</h2>
+                      <Link to='/contact'> <h2 className="text-2xl font-bold">{profile.phone || '013xxxxxxxx'}</h2> </Link> 
                         <p>Contact</p>
                     </div>
                 </div>
@@ -30,9 +56,15 @@ const UserHome = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Profile Card */}
                     <div className="bg-orange-100 dark:bg-orange-900 p-6 h-[400px] rounded-lg flex flex-col justify-center items-center shadow">
-                        <div className="w-24 h-24 bg-white rounded-full border-4 border-orange-400 mb-4"></div>
-                        <h2 className="text-xl font-semibold">AWLAD HOSSAIN</h2>
-                        <p className="text-red-500 text-sm">tonmoytafsirul9@gmail.com</p>
+                        <div className="w-24 h-24 rounded-full border-4 border-orange-400 mb-4 overflow-hidden">
+                            <img
+                                src={profile.photoURL || 'https://i.ibb.co/SDjzwBSF/p6.jpg'}
+                                alt="User Profile"
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                        <h2 className="text-xl font-semibold">{profile.name || 'AWLAD HOSSAIN'}</h2>
+                        <p className="text-red-500 text-sm">{profile.email || 'tonmoytafsirul9@gmail.com'}</p>
                     </div>
 
                     {/* Activity */}

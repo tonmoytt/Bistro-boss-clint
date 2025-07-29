@@ -15,7 +15,8 @@ const OurShop = () => {
   const [newlyAddedItem, setNewlyAddedItem] = useState(null);
   useEffect(() => {
     if (newlyAddedItem) {
-      axios.post( ( 'http://localhost:5000/cart'), newlyAddedItem ,{
+      axios.post( ( 'https://bistro-boss-server-two-gamma.vercel.app/cart'), newlyAddedItem ,{
+        // `${import.meta.env.VITE_API_URL}/cart`
          withCredentials: true // token cookie allow করবে
       })
         .then(data => {

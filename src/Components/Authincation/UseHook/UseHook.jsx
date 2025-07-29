@@ -5,7 +5,7 @@ import { AuthContext } from '../Authincation';
 
 
 const AxiosUseHook = axios.create({
-    baseURL: 'http://localhost:5000',   // এখানে ছোট 'b' হবে, BaseURL নয়
+    baseURL: 'https://bistro-boss-server-two-gamma.vercel.app',   // এখানে ছোট 'b' হবে, BaseURL নয়
     withCredentials: true               // withCredential -> withCredentials (s লাগবে)
 });
 

@@ -10,7 +10,7 @@ const ChefRecommend = () => {
   const { currentUser } = useContext(AuthContext);
   const token = localStorage.getItem('access-token');
 
-  // Fetch Chef Recommend menu items from data.json
+  // ✅ 1. Load chef-recommend items from local data
   useEffect(() => {
     fetch('/data.json')
       .then((res) => res.json())
@@ -20,10 +20,10 @@ const ChefRecommend = () => {
       });
   }, []);
 
-  // Fetch user's cart items from backend
+  // ✅ 2. Load items already added to cart from backend
   useEffect(() => {
     if (currentUser && token) {
-      axios.get(`http://localhost:5000/chef?email=${currentUser.email.toLowerCase()}`, {
+      axios.get(`https://bistro-boss-server-two-gamma.vercel.app/get-chef?email=${currentUser.email.toLowerCase()}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -37,6 +37,7 @@ const ChefRecommend = () => {
     }
   }, [currentUser, token]);
 
+  // ✅ 3. Add item to backend and update UI
   const Handleaddbtn = (item) => {
     if (!currentUser) {
       Swal.fire({
@@ -47,7 +48,6 @@ const ChefRecommend = () => {
       return;
     }
 
-    // Confirm before adding
     Swal.fire({
       title: 'Are you sure?',
       text: `Do you want to add "${item.name}" to your cart?`,
@@ -64,7 +64,7 @@ const ChefRecommend = () => {
           userEmail: currentUser.email.toLowerCase()
         };
 
-        axios.post('http://localhost:5000/chef', cartItem, {
+        axios.post('https://bistro-boss-server-two-gamma.vercel.app/chef', cartItem, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -78,7 +78,6 @@ const ChefRecommend = () => {
                 timer: 1500,
                 showConfirmButton: false
               });
-              // Update cartItems state to disable button immediately
               setCartItems(prev => [...prev, cartItem]);
             }
           })
@@ -104,7 +103,7 @@ const ChefRecommend = () => {
     });
   };
 
-  // Check if an item is already in cart
+  // ✅ 4. Check if item already added
   const isInCart = (item) => {
     return cartItems.some(cartItem => cartItem.name === item.name);
   };

@@ -8,35 +8,12 @@ import { AuthContext } from '../../../Authincation/Authincation';
 import Swal from 'sweetalert2';
 
 const Dashboard = () => {
-  const { cartItems, addToCart, decreaseFromCart, removeFromCart } = useContext(CartContext);
-  // backend theke data asle ata cmt
+  
   const { currentUser } = useContext(AuthContext);
 
+ 
 
-  const removeItemLocal = (itemId) => {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        removeFromCart(itemId);  // local state থেকে item remove করবে (context function)
-
-        Swal.fire(
-          'Deleted!',
-          'Your item has been removed.',
-          'success'
-        );
-        // এখানে আর আলাদা page reload বা fetch করার দরকার নাই
-      }
-    });
-  };
-
-
+// backend theke data asle ata cmt
 
 
   // DashboardCart backend.jsx
@@ -46,7 +23,7 @@ const Dashboard = () => {
 
   const CheffetchCartItems = () => {
     axios
-      .get(`http://localhost:5000/Chef?email=${currentUser.email}`, {
+      .get(`https://bistro-boss-server-two-gamma.vercel.app/get-chef?email=${currentUser.email}`, {
         withCredentials: true
       })
       .then((res) => setChefRecommend(res.data))
@@ -61,20 +38,18 @@ const Dashboard = () => {
   // ✅ Quantity বাড়ানো
   const increaseQuantityChef = (itemId) => {
     axios
-      .patch(`http://localhost:5000/Chef/increase/${itemId}`, {}, { withCredentials: true })
+      .patch(`https://bistro-boss-server-two-gamma.vercel.app/Chef/increase/${itemId}`, {}, { withCredentials: true })
       .then(CheffetchCartItems);
   };
 
   // ✅ Quantity কমানো
   const decreaseQuantityChef = (itemId) => {
     axios
-      .patch(`http://localhost:5000/Chef/decrease/${itemId}`, {}, { withCredentials: true })
+      .patch(`https://bistro-boss-server-two-gamma.vercel.app/Chef/decrease/${itemId}`, {}, { withCredentials: true })
       .then(CheffetchCartItems);
   };
 
   // ✅ Cart থেকে item remove
-
-
   const removeItemChef = (itemId) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -87,7 +62,7 @@ const Dashboard = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:5000/Chef/${itemId}`, { withCredentials: true })
+          .delete(`https://bistro-boss-server-two-gamma.vercel.app/Chef/${itemId}`, { withCredentials: true })
           .then(() => {
             Swal.fire(
               'Deleted!',
@@ -99,7 +74,6 @@ const Dashboard = () => {
       }
     });
   };
-
 
   const getNumericPriceChef = (price) => {
     if (!price) return 0;
@@ -114,18 +88,19 @@ const Dashboard = () => {
       // অন্য অবজেক্ট ফরম্যাট
       return 0;
     }
-
     const num = Number(price);
     return isNaN(num) ? 0 : num;
   };
 
-
+console.log(import.meta.env.VITE_API_URL) 
   // 🔁 Backend থেকে cart fetch
   const [cartItemsBackend, setCartItems] = useState([]);
   // 🔁 Backend থেকে cart fetch
   const fetchCartItems = () => {
     axios
-      .get(`http://localhost:5000/cart?email=${currentUser.email}`, {
+      .get(`${import.meta.env.VITE_API_URL}/cart?email=${currentUser.email}`, 
+        // ${import.meta.env.VITE_API_URL}/cart
+        {
         withCredentials: true
       })
       .then((res) => setCartItems(res.data))
@@ -142,19 +117,18 @@ const Dashboard = () => {
   // ✅ Quantity বাড়ানো
   const increaseQuantity = (itemId) => {
     axios
-      .patch(`http://localhost:5000/cart/increase/${itemId}`, {}, { withCredentials: true })
+      .patch(`https://bistro-boss-server-two-gamma.vercel.app/cart/increase/${itemId}`, {}, { withCredentials: true })
       .then(fetchCartItems);
   };
 
   // ✅ Quantity কমানো
   const decreaseQuantity = (itemId) => {
     axios
-      .patch(`http://localhost:5000/cart/decrease/${itemId}`, {}, { withCredentials: true })
+      .patch(`https://bistro-boss-server-two-gamma.vercel.app/cart/decrease/${itemId}`, {}, { withCredentials: true })
       .then(fetchCartItems);
   };
 
   // ✅ Cart থেকে item remove
-
 
   const removeItem = (itemId) => {
     Swal.fire({
@@ -168,7 +142,7 @@ const Dashboard = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:5000/cart/${itemId}`, { withCredentials: true })
+          .delete(`https://bistro-boss-server-two-gamma.vercel.app/cart/${itemId}`, { withCredentials: true })
           .then(() => {
             Swal.fire(
               'Deleted!',
@@ -181,8 +155,8 @@ const Dashboard = () => {
     });
   };
 
-
-  const getNumericPrice = (price) => {
+// nmbring  
+const getNumericPrice = (price) => {
     if (!price) return 0;
 
     if (typeof price === 'object') {
@@ -205,7 +179,7 @@ const Dashboard = () => {
 
 
   return (
-
+<div>
     <div className="mt-6 p-4 sm:p-6 max-w-6xl mx-auto min-h-[80vh] bg-gradient-to-br from-[#f9fafb] via-[#e2e8f0] to-[#f8fafc] rounded-2xl shadow-2xl border border-gray-200">
       <Helmet>
         <title>Bistro-Boss | Resturent | DashBoard</title>
@@ -215,7 +189,7 @@ const Dashboard = () => {
       </h2>
 
       {/* locally added card */}
-      {cartItems.length === 0 ? (
+      {/* {cartItems.length === 0 ? (
         <p className="text-lg text-gray-600 text-center">No items in your cart yet.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -283,7 +257,7 @@ const Dashboard = () => {
             ))}
           </AnimatePresence>
         </div>
-      )}
+      )} */}
 
       {/* backend card item show */}
       {cartItemsBackend.length === 0 ? (
@@ -358,6 +332,14 @@ const Dashboard = () => {
           </AnimatePresence>
         </div>)}
 
+
+    </div>
+
+<div className="mt-6 p-4 sm:p-6 max-w-6xl mx-auto min-h-[80vh] bg-gradient-to-br from-[#f9fafb] via-[#e2e8f0] to-[#f8fafc] rounded-2xl shadow-2xl border border-gray-200">
+ <h2 className="text-3xl sm:text-4xl font-extrabold mb-6 text-center text-gray-800 border-b border-gray-300 pb-4">
+        🛒 Chef recommend Cart
+      </h2>
+
       {/* // chef recommend card show */}
       {ChefRecommend.length === 0 ? (
         <p className="text-lg text-gray-600 text-center">Chef Recommend item.</p>
@@ -431,7 +413,7 @@ const Dashboard = () => {
           </AnimatePresence>
         </div>
       )}
-
+      </div>
     </div>
 
   )
