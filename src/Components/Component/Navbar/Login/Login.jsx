@@ -5,6 +5,7 @@ import { AuthContext } from '../../../Authincation/Authincation';
 import Swal from 'sweetalert2';
 import { Helmet } from 'react-helmet-async';
 import axios from 'axios';
+import UseAdmin from '../../../UseAdmin/UseAdmin'; // ✅ Admin check হুক
 
 const Login = () => {
   const [error, setError] = useState('');
@@ -16,65 +17,73 @@ const Login = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || '/';
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const email = form.email.value.toLowerCase(); // 🔥 Lowercase করে নিচ্ছি;
-    const password = form.password.value;
-    const checkbox = form.checkbox.checked;
+  const [isAdmin, isAdminLoading] = UseAdmin(); // ✅ Admin check hook
 
-    if (!checkbox) {
-      setError('Please accept our terms and conditions');
-      return;
-    }
+ const handleLogin = async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const email = form.email.value.toLowerCase();
+  const password = form.password.value;
+  const checkbox = form.checkbox.checked;
 
-    try {
-      // Firebase (বা অন্য) দিয়ে login
-      const res = await Login(email, password);
-      const user = res.user;
-      await user.reload(); // fresh user data reload
+  if (!checkbox) {
+    setError('Please accept our terms and conditions');
+    return;
+  }
 
-      // JWT token generate করার জন্য backend এ request পাঠানো
-      // এখানে withCredentials:true দরকার যাতে cookie সঠিকভাবে সেট হয়
-      const { data } = await axios.post(
-        ' https://bistro-boss-server-two-gamma.vercel.app/jwt',
-        { email: user.email },
-        { withCredentials: true }
-      );
+  try {
+    const res = await Login(email, password);
+    const user = res.user;
+    await user.reload();
 
-      if (data.success) {
-         // ✅ এখানে token localStorage এ সেট করো
-    localStorage.setItem('access-token', data.token);
-        Swal.fire({
-          title: 'Login Successful!',
-          text: `Welcome back, ${user.email}`,
-          icon: 'success',
-          confirmButtonText: 'Continue',
-          confirmButtonColor: '#facc15',
-          background: '#1f2937',
-          color: '#fef3c7',
-        });
+    const { data: tokenData } = await axios.post(
+      'http://localhost:5000/jwt',
+      { email: user.email },
+      { withCredentials: true }
+    );
 
-        form.reset();
-        setError('');
-        navigate(from, { replace: true });
-      } else {
-        throw new Error('Failed to get JWT token');
-      }
-    } catch (error) {
+    if (tokenData.success) {
+      // ✅ Get user role directly from backend
+      const { data: userInfo } = await axios.get(`http://localhost:5000/users/${email}`);
+
       Swal.fire({
-        title: 'Login Failed!',
-        text: error.message || 'Please check your email and password.',
-        icon: 'error',
-        confirmButtonText: 'Try Again',
-        confirmButtonColor: '#ef4444',
+        title: 'Login Successful!',
+        text: `Welcome back, ${user.email}`,
+        icon: 'success',
+        confirmButtonText: 'Continue',
+        confirmButtonColor: '#facc15',
         background: '#1f2937',
-        color: '#fecaca',
+        color: '#fef3c7',
       });
 
-      setError('Login failed. Please check your email and password.');
+      form.reset();
+      setError('');
+
+      if (userInfo?.role === 'admin') {
+        navigate('/', { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
+
+    } else {
+      throw new Error('JWT token failed');
     }
-  };
+
+  } catch (error) {
+    Swal.fire({
+      title: 'Login Failed!',
+      text: error.message || 'Check email & password.',
+      icon: 'error',
+      confirmButtonText: 'Try Again',
+      confirmButtonColor: '#ef4444',
+      background: '#1f2937',
+      color: '#fecaca',
+    });
+
+    setError('Login failed. Please check your email and password.');
+  }
+};
+
 
   return (
     <div>
@@ -82,7 +91,7 @@ const Login = () => {
         <title>Bistro-Boss | Restaurant | Login</title>
       </Helmet>
       <form onSubmit={handleLogin}>
-         <div
+        <div
           style={{
             background:
               'radial-gradient(circle at center, #122E44 0%, #0c1e3c 50%, #06121e 100%)',

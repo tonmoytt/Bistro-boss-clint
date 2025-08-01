@@ -8,7 +8,7 @@ const UserHome = () => {
     const { currentUser } = useContext(AuthContext)
 
     useEffect(() => {
-        axios.get(` https://bistro-boss-server-two-gamma.vercel.app/get-user/${currentUser.email.toLowerCase()}`, {
+        axios.get(` http://localhost:5000/get-user/${currentUser.email.toLowerCase()}`, {
             withCredentials: true
         })
 

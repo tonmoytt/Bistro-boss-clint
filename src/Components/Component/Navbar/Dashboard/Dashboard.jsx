@@ -28,7 +28,7 @@ const Dashboard = () => {
   const CheffetchCartItems = () => {
     setIsChefCartLoading(true)
     axios
-      .get(` https://bistro-boss-server-two-gamma.vercel.app/get-chef?email=${currentUser.email}`, {
+      .get(` http://localhost:5000/get-chef?email=${currentUser.email}`, {
         withCredentials: true
       })
       .then((res) => {
@@ -51,7 +51,7 @@ const Dashboard = () => {
   const increaseQuantityChef = (itemId) => {
      setIsChefCartLoading(true);  
     axios
-      .patch(` https://bistro-boss-server-two-gamma.vercel.app/Chef/increase/${itemId}`, {}, { withCredentials: true })
+      .patch(` http://localhost:5000/Chef/increase/${itemId}`, {}, { withCredentials: true })
       .then(CheffetchCartItems);
   
   };
@@ -60,7 +60,7 @@ const Dashboard = () => {
   const decreaseQuantityChef = (itemId) => {
      setIsChefCartLoading(true);  
     axios
-      .patch(` https://bistro-boss-server-two-gamma.vercel.app/Chef/decrease/${itemId}`, {}, { withCredentials: true })
+      .patch(` http://localhost:5000/Chef/decrease/${itemId}`, {}, { withCredentials: true })
       .then(CheffetchCartItems);
       
   };
@@ -78,7 +78,7 @@ const Dashboard = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(` https://bistro-boss-server-two-gamma.vercel.app/Chef/${itemId}`, { withCredentials: true })
+          .delete(` http://localhost:5000/Chef/${itemId}`, { withCredentials: true })
           .then(() => {
             Swal.fire(
               'Deleted!',
@@ -119,7 +119,7 @@ const Dashboard = () => {
   const fetchCartItems = () => {
     setIsCartLoading(true)
     axios
-      .get(` https://bistro-boss-server-two-gamma.vercel.app/cart?email=${currentUser.email}`,
+      .get(` http://localhost:5000/cart?email=${currentUser.email}`,
         // ${import.meta.env.VITE_API_URL}/cart
         {
           withCredentials: true
@@ -147,14 +147,14 @@ const Dashboard = () => {
   // ✅ Quantity বাড়ানো
   const increaseQuantity = (itemId) => {
     axios
-      .patch(` https://bistro-boss-server-two-gamma.vercel.app/cart/increase/${itemId}`, {}, { withCredentials: true })
+      .patch(` http://localhost:5000/cart/increase/${itemId}`, {}, { withCredentials: true })
       .then(fetchCartItems);
   };
 
   // ✅ Quantity কমানো
   const decreaseQuantity = (itemId) => {
     axios
-      .patch(` https://bistro-boss-server-two-gamma.vercel.app/cart/decrease/${itemId}`, {}, { withCredentials: true })
+      .patch(` http://localhost:5000/cart/decrease/${itemId}`, {}, { withCredentials: true })
       .then(fetchCartItems);
   };
 
@@ -172,7 +172,7 @@ const Dashboard = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(` https://bistro-boss-server-two-gamma.vercel.app/cart/${itemId}`, { withCredentials: true })
+          .delete(` http://localhost:5000/cart/${itemId}`, { withCredentials: true })
           .then(() => {
             Swal.fire(
               'Deleted!',

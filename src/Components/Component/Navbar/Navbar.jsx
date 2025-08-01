@@ -9,6 +9,7 @@ import 'react-tooltip/dist/react-tooltip.css';
 import md5 from 'md5';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios'; // ✅ এখানে axios import করলাম
+import UseAdmin from '../../UseAdmin/UseAdmin';
 
 const Navbar = () => {
     const location = useLocation();
@@ -17,6 +18,7 @@ const Navbar = () => {
     const { currentUser, SignoutUser } = useContext(AuthContext);
     const [menuOpen, setMenuOpen] = useState(false);
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+    const [isAdmin]= UseAdmin()
 
     useEffect(() => {
         const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
@@ -31,7 +33,7 @@ const Navbar = () => {
             if (currentUser?.email) {
                 try {
                     const encodedEmail = encodeURIComponent(currentUser.email.toLowerCase());
-                    const res = await axios.get(` https://bistro-boss-server-two-gamma.vercel.app/users/${encodedEmail}`, {
+                    const res = await axios.get(` http://localhost:5000/users/${encodedEmail}`, {
                         withCredentials: true,
                     });
 
@@ -77,7 +79,7 @@ const Navbar = () => {
             if (result.isConfirmed) {
                 try {
                     // Backend logout call - JWT token cookie ক্লিয়ার করার জন্য
-                    await axios.post((' https://bistro-boss-server-two-gamma.vercel.app/logout'), {}, { withCredentials: true });
+                    await axios.post((' http://localhost:5000/logout'), {}, { withCredentials: true });
 
                     // Firebase logout
                     await SignoutUser();
@@ -106,6 +108,7 @@ const Navbar = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setMenuOpen(false);
     };
+console.log(isAdmin);
 
     const menuItems = (
         <>
@@ -129,8 +132,9 @@ const Navbar = () => {
             >
                 Contact Us
             </Link>
+            
             <Link
-                to="/userdashboard"
+                to={isAdmin ? '/admindashboard' : '/userdashboard'}
                 className={`hover:text-yellow-400 transition duration-300 ease-in-out ${currentPath === '/dashboard'
                     ? 'bg-yellow-500 text-black px-3 py-1 rounded-md animate-pulse scale-105'
                     : ''

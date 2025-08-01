@@ -12,25 +12,24 @@ import React, { createContext, useEffect, useState } from 'react';
 import auth from './Firebase.init.js/Firebase.init';
 import axios from 'axios';
 
-
 export const AuthContext = createContext(null);
 
 const Authincation = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [loding, setloding] = useState(true);
+  const [loading, setLoading] = useState(true); // corrected name
 
   const signupUser = (email, password) => {
-    setloding(true);
+    setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
   const Login = (email, password) => {
-    setloding(true);
+    setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
   const SignoutUser = () => {
-    setloding(true);
+    setLoading(true);
     return signOut(auth);
   };
 
@@ -42,72 +41,56 @@ const Authincation = ({ children }) => {
     });
   };
 
-  // Google login function
   const googleLogin = () => {
     const provider = new GoogleAuthProvider();
-    setloding(true);
+    setLoading(true);
     return signInWithPopup(auth, provider);
   };
 
-useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, async (user) => {
-    console.log('Current user:', user);
-    setCurrentUser(user);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setCurrentUser(user);
 
-    if (user?.email) {
-      const emailUser = { email: user.email };
+      if (user?.email) {
+        const emailUser = { email: user.email };
 
-      // 🔐 Send JWT token
-      axios.post(' https://bistro-boss-server-two-gamma.vercel.app/jwt', emailUser, { withCredentials: true })
-        .then(res => {
-          console.log('JWT sent, token stored in cookie:', res.data);
-        })
-        .catch(error => {
-          console.error('JWT error:', error.message);
-        });
+        // 🔐 Send JWT token
+        axios.post('http://localhost:5000/jwt', emailUser, { withCredentials: true })
+          .then(res => {
+            console.log('JWT sent, token stored in cookie:', res.data);
+          })
+          .catch(error => {
+            console.error('JWT error:', error.message);
+          });
 
-      // ⬇️ Backend user creation or update
-      const backendUser = {
-        name: user.displayName || 'Unnamed User',
-        email: user.email,
-        photoURL: user.photoURL || '',
-        uid: user.uid,
-        createdAt: new Date().toISOString()
-      };
+        // ⬇️ Backend user creation or update
+        const backendUser = {
+          name: user.displayName || 'Unnamed User',
+          email: user.email.toLowerCase(),
+          photoURL: user.photoURL || '',
+          uid: user.uid,
+          createdAt: new Date().toISOString()
+        };
 
-      try {
-        await axios.post(' https://bistro-boss-server-two-gamma.vercel.app/users', backendUser);
-        console.log('User info saved to DB');
-      } catch (error) {
-        console.error('User info save error:', error.message);
+        try {
+          await axios.post('http://localhost:5000/users', backendUser);
+          console.log('User info saved to DB');
+        } catch (error) {
+          console.error('User info save error:', error.message);
+        }
+
+      } else {
+        // 🔐 Remove cookie on logout
+        axios.post('http://localhost:5000/logout', {}, { withCredentials: true })
+          .then(data => console.log('Logout success:', data.data))
+          .catch(error => console.error('Logout error:', error.message));
       }
 
-    } else {
-      // 🔐 Remove cookie on logout
-      axios.post(' https://bistro-boss-server-two-gamma.vercel.app/logout', {}, { withCredentials: true })
-        .then(data => console.log('Logout success:', data.data))
-        .catch(error => console.error('Logout error:', error.message));
-    }
+      setLoading(false);
+    });
 
-    // 🔄 Force user refresh
-    if (user) {
-      await user.reload();
-      setCurrentUser(user);
-    } else {
-      setCurrentUser(null);
-    }
-
-    setloding(false);
-  });
-
-  return () => unsubscribe();
-}, []);
-
-
-
-
-  //  
-
+    return () => unsubscribe();
+  }, []);
 
   const Authinfo = {
     signupUser,
@@ -116,7 +99,7 @@ useEffect(() => {
     updateUserProfile,
     googleLogin,
     currentUser,
-    loding
+    loading
   };
 
   return (
